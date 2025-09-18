@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Stock Predictor">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Stock Predictor">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="msapplication-TileColor" content="#4F46E5">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Apple Touch Icons for different sizes -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzRGNzZFNiIgcng9IjIwIi8+PHRleHQgeD0iOTAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRTUDwvdGV4dD48L3N2Zz4=">
+    <link rel="apple-touch-icon" sizes="152x152" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTIgMTUyIj48cmVjdCB3aWR0aD0iMTUyIiBoZWlnaHQ9IjE1MiIgZmlsbD0iIzRGNzZFNiIgcng9IjE3Ii8+PHRleHQgeD0iNzYiIHk9Ijg1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RFNQPC90ZXh0Pjwvc3ZnPg==">
+    <link rel="apple-touch-icon" sizes="120x120" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzRGNzZFNiIgcng9IjE0Ii8+PHRleHQgeD0iNjAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RFNQPC90ZXh0Pjwvc3ZnPg==">
+    <link rel="apple-touch-icon" sizes="76x76" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NiA3NiI+PHJlY3Qgd2lkdGg9Ijc2IiBoZWlnaHQ9Ijc2IiBmaWxsPSIjNEY3NkU2IiByeD0iMTAiLz48dGV4dCB4PSIzOCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5EU1A8L3RleHQ+PC9zdmc+">
+    
+    <!-- Standard favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjNEY3NkU2IiByeD0iNCIvPjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRTUDwvdGV4dD48L3N2Zz4=">
+    
+    <!-- Preconnect to external domains for better performance -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://www.alphavantage.co">
+    <title>Mr. FLEN's Stock Prediction Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Exo 2', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+        .symbol-result:hover {
+            background-color: rgba(6, 182, 212, 0.2);
+        }
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+        }
+        .overview-item {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 6px;
+            padding: 6px 8px;
+        }
+        .mobile-safe-area {
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+        .ios-button {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 12px;
+            font-weight: 600;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            min-width: 44px;
+        }
+        .ios-button:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+        .ios-input {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 10px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        .ios-input:focus {
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+        }
+        .app-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .install-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .install-icon i {
+            font-size: 24px;
+            color: #4F46E5;
+        }
+        .install-content h3 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 3px;
+            font-size: 16px;
+        }
+        .install-content p {
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .install-button {
+            background: white;
+            color: #4F46E5;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .prediction-card {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        .modal-content {
+            background: #1F2937;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+        .safe-area-top {
+            padding-top: env(safe-area-inset-top);
+        }
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* iPhone-specific optimizations */
+        @supports (-webkit-touch-callout: none) {
+            /* iOS Safari specific styles */
+            .ios-scroll {
+                -webkit-overflow-scrolling: touch;
+                overflow-scrolling: touch;
+            }
+            
+            .ios-fix-input {
+                font-size: 16px !important;
+                transform: translateZ(0);
+            }
+            
+            .ios-no-zoom {
+                font-size: 16px;
+                -webkit-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+        }
+        
+        /* Touch-friendly spacing */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Prevent text selection on UI elements */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Smooth scrolling for iOS */
+        .smooth-scroll {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        /* Fix for iOS Safari address bar */
+        .ios-viewport-fix {
+            min-height: -webkit-fill-available;
+            min-height: 100vh;
+        }
+        
+        /* Better focus states for accessibility */
+        .focus-visible:focus {
+            outline: 2px solid #60A5FA;
+            outline-offset: 2px;
+        }
+        
+        /* Prevent iOS bounce scrolling */
+        .no-bounce {
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 min-h-screen text-white safe-area-top safe-area-bottom ios-viewport-fix no-bounce">
+    <div class="container mx-auto px-3 py-5 max-w-2xl mobile-safe-area">
+        <!-- Header -->
+        <header class="text-center mb-5 relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 blur-2xl rounded-full mx-auto w-3/4 h-20"></div>
+            <h1 class="text-2xl font-bold mb-1.5 relative z-10">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 font-orbitron">
+                    MR. FLEN'S
+                </span>
+                <br>
+                <span class="font-exo text-lg">STOCK PREDICTION GAME</span>
+            </h1>
+            <div class="flex justify-center space-x-1">
+                <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
+                <div class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse delay-100"></div>
+                <div class="w-1.5 h-1.5 bg-pink-400 rounded-full animate-pulse delay-200"></div>
+            </div>
+        </header>
+
+        <!-- Install App Banner (iOS) -->
+        <div id="install-banner" class="app-banner hidden">
+            <div class="install-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="install-content flex-1">
+                <h3>Install Stock Predictor</h3>
+                <p>Add to your home screen for full screen experience</p>
+                <button id="install-button" class="install-button">Install</button>
+            </div>
+            <button id="close-banner" class="text-white/70 ml-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- User Info Bar -->
+        <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 mb-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-xs"></i>
+                </div>
+                <div>
+                    <div class="font-exo font-bold text-xs" id="current-user">Guest User</div>
+                    <div class="text-[10px] text-gray-400">
+                        <span class="mr-1.5">S1: <span id="user-points-s1">0</span></span>
+                        <span>S2: <span id="user-points-s2">0</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-1.5">
+                <button id="league-tab" class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg font-exo font-bold text-[10px] transition-all">
+                    <i class="fas fa-trophy mr-1"></i>LEAGUE
+                </button>
+                <button id="settings-tab" class="px-2.5 py-1.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 rounded-lg font-exo font-bold text-[10px] transition-all">
+                    <i class="fas fa-cog mr-1"></i>SETTINGS
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="main-content">
+            <!-- Dashboard Content -->
+            <div id="dashboard-content">
+                <!-- Market Status -->
+                <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 mb-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base font-exo font-bold text-gray-200 mb-1">MARKET STATUS</h3>
+                                <p id="market-status-text" class="text-gray-300 text-xs">Analyzing quantum market state...</p>
+                            </div>
+                            <div id="market-status-icon" class="text-xl"></div>
+                        </div>
+                        <div class="mt-1.5 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                            <div id="market-progress" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 w-0 transition-all duration-1000"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Form -->
+                <div id="prediction-form-container" class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 mb-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-base font-exo font-bold text-gray-200 mb-3">QUANTUM PREDICTION ENGINE</h3>
+                        <form id="prediction-form">
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="symbol">
+                                        <i class="fas fa-chart-line mr-1 text-cyan-400"></i>STOCK SYMBOL
+                                    </label>
+                                    <div class="flex">
+                                        <input 
+                                            type="text" 
+                                            id="symbol" 
+                                            class="flex-1 px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-l-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm" 
+                                            placeholder="e.g. AAPL, GOOGL"
+                                            required
+                                            autocomplete="off"
+                                            autocorrect="off"
+                                            autocapitalize="off"
+                                            spellcheck="false"
+                                        >
+                                        <button 
+                                            type="button" 
+                                            id="check-symbol" 
+                                            class="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 px-2.5 py-2 rounded-r-lg transition-all duration-300 font-exo font-bold ios-button text-sm"
+                                            title="Search for stock symbol"
+                                            aria-label="Search for stock symbol"
+                                        >
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <!-- Symbol Search Results -->
+                                    <div id="symbol-search-results" class="mt-2 bg-gray-900/90 border border-cyan-500/30 rounded-lg absolute z-20 w-full hidden shadow-lg">
+                                        <div class="max-h-44 overflow-y-auto">
+                                            <ul id="symbol-results-list" class="py-1"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2.5">
+                                    <div>
+                                        <label class="block text-gray-300 font-exo font-medium mb-1 text-xs">
+                                            <i class="fas fa-calendar-day mr-1 text-cyan-400"></i>PERIOD
+                                        </label>
+                                        <div class="grid grid-cols-2 gap-1">
+                                            <label class="flex items-center bg-gray-900/50 p-1.5 rounded-lg cursor-pointer hover:bg-gray-800/70 border border-cyan-500/20 transition-all text-[10px]">
+                                                <input type="radio" name="period" value="day" class="mr-1 accent-cyan-500" checked>
+                                                <span class="font-exo">TODAY</span>
+                                            </label>
+                                            <label class="flex items-center bg-gray-900/50 p-1.5 rounded-lg cursor-pointer hover:bg-gray-800/70 border border-cyan-500/20 transition-all text-[10px]">
+                                                <input type="radio" name="period" value="week" class="mr-1 accent-purple-500">
+                                                <span class="font-exo">WEEK</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-gray-300 font-exo font-medium mb-1 text-xs">
+                                            <i class="fas fa-arrow-up mr-1 text-cyan-400"></i>PREDICTION
+                                        </label>
+                                        <div class="grid grid-cols-2 gap-1">
+                                            <label class="flex items-center bg-green-900/30 p-1.5 rounded-lg cursor-pointer hover:bg-green-800/50 border border-green-500/30 transition-all text-[10px]">
+                                                <input type="radio" name="prediction" value="up" class="mr-1 accent-green-500" required>
+                                                <span class="text-green-400 font-exo">UP</span>
+                                            </label>
+                                            <label class="flex items-center bg-red-900/30 p-1.5 rounded-lg cursor-pointer hover:bg-red-800/50 border border-red-500/30 transition-all text-[10px]">
+                                                <input type="radio" name="prediction" value="down" class="mr-1 accent-red-500">
+                                                <span class="text-red-400 font-exo">DOWN</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button 
+                                    type="submit" 
+                                    id="submit-prediction" 
+                                    class="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-exo font-bold py-2.5 px-3 rounded-xl transition-all duration-300 transform hover:scale-[1.02] ios-button text-sm"
+                                >
+                                    <i class="fas fa-rocket mr-1.5"></i>LAUNCH PREDICTION
+                                </button>
+                            </div>
+                            
+                            <!-- Stock Details Section -->
+                            <div id="stock-details" class="mt-4 p-2.5 bg-gray-900/50 rounded-xl border border-cyan-500/20 hidden backdrop-blur-sm">
+                                <div class="flex items-center justify-between mb-2.5">
+                                    <h4 class="text-sm font-exo font-bold text-gray-200">QUANTUM STOCK ANALYSIS</h4>
+                                    <button type="button" id="close-details" class="text-gray-400 hover:text-cyan-400 text-xs" title="Close stock details" aria-label="Close stock details">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div id="stock-info" class="mb-2.5">
+                                    <!-- Stock info will be populated here -->
+                                </div>
+                                <div id="company-overview" class="mt-2.5 bg-gray-900/70 p-2.5 rounded-lg border border-purple-500/20 hidden">
+                                    <h5 class="font-exo font-bold text-purple-400 text-xs mb-1.5">COMPANY OVERVIEW</h5>
+                                    <div id="overview-content" class="text-[10px] text-gray-300">
+                                        <!-- Company overview will be populated here -->
+                                    </div>
+                                </div>
+                                <div id="stock-chart" class="bg-gray-900/70 p-2.5 rounded-lg border border-cyan-500/20 mt-2.5">
+                                    <div class="text-center text-gray-500 py-5">
+                                        <i class="fas fa-spinner fa-spin text-lg mb-1.5"></i>
+                                        <p class="text-xs">Initializing quantum processors...</p>
+                                    </div>
+                                </div>
+                                <!-- Live Price Section -->
+                                <div id="live-price-section" class="mt-2.5 p-2.5 bg-gray-900/70 rounded-lg border border-cyan-500/20">
+                                    <div class="flex justify-between items-center">
+                                        <h5 class="font-exo font-bold text-cyan-400 text-xs">LIVE PRICE FEED</h5>
+                                        <button type="button" id="toggle-live-price" class="text-[10px] bg-cyan-600 hover:bg-cyan-500 px-1.5 py-1 rounded ios-button" title="Toggle live price updates" aria-label="Toggle live price updates">
+                                            <i class="fas fa-play"></i> START
+                                        </button>
+                                    </div>
+                                    <div id="live-price-display" class="mt-1.5 text-center text-lg font-orbitron">
+                                        <span id="live-price-value">$--.--</span>
+                                        <span id="live-price-change" class="ml-1.5 text-[10px]"></span>
+                                    </div>
+                                    <div class="mt-1.5 text-[10px] text-gray-400 text-center">
+                                        <i class="fas fa-sync-alt animate-spin mr-1"></i> Updating every 15 seconds
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Pending Predictions -->
+                <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-base font-exo font-bold text-gray-200 mb-2.5">QUANTUM PREDICTIONS</h3>
+                        <div id="pending-predictions-list" class="space-y-2.5">
+                            <p class="text-gray-400 text-center py-5">No pending quantum predictions in the system</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- League Content -->
+            <div id="league-content" class="hidden">
+                <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-base font-exo font-bold text-gray-200">QUANTUM LEAGUE TABLE</h3>
+                            <button id="refresh-leaderboard" class="px-2.5 py-1.5 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-lg font-exo font-bold text-[10px] transition-all">
+                                <i class="fas fa-sync mr-1"></i>REFRESH
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h4 class="font-exo font-bold text-xs text-cyan-400 mb-1.5">IMPORT USER DATA</h4>
+                            <div class="flex">
+                                <textarea 
+                                    id="import-data" 
+                                    class="flex-1 px-2.5 py-1.5 bg-gray-900/70 border border-cyan-500/30 rounded-l-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo text-[10px] backdrop-blur-sm ios-input" 
+                                    placeholder="Paste user data here to import..."
+                                    rows="2"
+                                    aria-label="Import user data"
+                                    title="Paste user data here to import"
+                                ></textarea>
+                                <button 
+                                    id="import-user-data" 
+                                    class="bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-500 hover:to-cyan-500 px-2.5 py-1.5 rounded-r-lg transition-all font-exo font-bold text-[10px] ios-button"
+                                >
+                                    IMPORT
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h4 class="font-exo font-bold text-xs text-cyan-400 mb-1.5">YOUR DATA TO SHARE</h4>
+                            <div class="flex">
+                                <textarea 
+                                    id="export-data" 
+                                    class="flex-1 px-2.5 py-1.5 bg-gray-900/70 border border-cyan-500/30 rounded-l-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo text-[10px] backdrop-blur-sm ios-input" 
+                                    rows="2"
+                                    readonly
+                                ></textarea>
+                                <button 
+                                    id="copy-data" 
+                                    class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 px-2.5 py-1.5 rounded-r-lg transition-all font-exo font-bold text-[10px] ios-button"
+                                >
+                                    COPY
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h4 class="font-exo font-bold text-xs text-cyan-400 mb-1.5">SCORING SYSTEMS</h4>
+                            <div class="grid grid-cols-1 gap-2.5">
+                                <div class="bg-gray-900/50 p-2.5 rounded-lg border border-cyan-500/20">
+                                    <h5 class="font-exo font-bold text-cyan-400 text-xs mb-1">System 1: Binary Scoring</h5>
+                                    <p class="text-[10px] text-gray-300">+1 pt for correct prediction, -1 pt for incorrect</p>
+                                </div>
+                                <div class="bg-gray-900/50 p-2.5 rounded-lg border border-purple-500/20">
+                                    <h5 class="font-exo font-bold text-purple-400 text-xs mb-1">System 2: Percentage Scoring</h5>
+                                    <p class="text-[10px] text-gray-300">±1 pt per 1% change in predicted direction</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-exo font-bold text-xs text-cyan-400 mb-1.5">LEADERBOARD</h4>
+                            <div id="leaderboard" class="space-y-1.5">
+                                <p class="text-gray-400 text-center py-5">No league data available. Import user data to see rankings.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div id="settings-content" class="hidden">
+                <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-base font-exo font-bold text-gray-200 mb-3">USER SETTINGS</h3>
+                        
+                        <form id="user-settings-form" class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="username">
+                                    <i class="fas fa-user-edit mr-1 text-cyan-400"></i>USERNAME
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    class="w-full px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm" 
+                                    placeholder="Enter your username"
+                                    required
+                                    autocomplete="username"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    spellcheck="false"
+                                >
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 font-exo font-medium mb-1 text-xs">
+                                    <i class="fas fa-palette mr-1 text-cyan-400"></i>THEME
+                                </label>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <label class="flex items-center bg-gray-900/50 p-1.5 rounded-lg cursor-pointer hover:bg-gray-800/70 border border-cyan-500/20 transition-all text-[10px]">
+                                        <input type="radio" name="theme" value="default" class="mr-1 accent-cyan-500" checked>
+                                        <span class="font-exo">DEFAULT</span>
+                                    </label>
+                                    <label class="flex items-center bg-gray-900/50 p-1.5 rounded-lg cursor-pointer hover:bg-gray-800/70 border border-purple-500/20 transition-all text-[10px]">
+                                        <input type="radio" name="theme" value="dark" class="mr-1 accent-purple-500">
+                                        <span class="font-exo">DARK</span>
+                                    </label>
+                                    <label class="flex items-center bg-gray-900/50 p-1.5 rounded-lg cursor-pointer hover:bg-gray-800/70 border border-pink-500/20 transition-all text-[10px]">
+                                        <input type="radio" name="theme" value="neon" class="mr-1 accent-pink-500">
+                                        <span class="font-exo">NEON</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                class="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-exo font-bold py-2 px-3 rounded-xl transition-all duration-300 ios-button text-sm"
+                            >
+                                <i class="fas fa-save mr-1.5"></i>SAVE SETTINGS
+                            </button>
+                        </form>
+                        
+                        <div class="mt-5 pt-3 border-t border-gray-700">
+                            <h4 class="font-exo font-bold text-xs text-red-400 mb-1.5">DANGER ZONE</h4>
+                            <button 
+                                id="reset-data" 
+                                class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-exo font-bold py-2 px-3 rounded-xl transition-all duration-300 ios-button text-sm"
+                            >
+                                <i class="fas fa-trash mr-1.5"></i>RESET ALL DATA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Content -->
+            <div id="history-content" class="hidden">
+                <div class="bg-gradient-to-r from-gray-800/60 to-gray-900/60 backdrop-blur-lg border border-cyan-500/30 rounded-2xl shadow-xl p-3 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-base font-exo font-bold text-gray-200 mb-3">QUANTUM HISTORY</h3>
+                        <div id="history-list" class="space-y-2.5">
+                            <p class="text-gray-400 text-center py-5">No quantum predictions in the temporal archive</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-gray-700 mt-5 pb-1.5 overflow-x-auto smooth-scroll no-bounce">
+            <button id="dashboard-tab" class="tab-btn active px-3 py-1.5 font-exo font-bold border-b-2 border-cyan-400 text-cyan-400 bg-gray-800/30 backdrop-blur-sm text-xs whitespace-nowrap touch-target ios-button">DASHBOARD</button>
+            <button id="history-tab" class="tab-btn px-3 py-1.5 font-exo font-bold text-gray-400 hover:text-cyan-300 text-xs whitespace-nowrap touch-target ios-button">HISTORY</button>
+            <button id="league-tab-bottom" class="tab-btn px-3 py-1.5 font-exo font-bold text-gray-400 hover:text-cyan-300 text-xs whitespace-nowrap touch-target ios-button">LEAGUE</button>
+            <button id="settings-tab-bottom" class="tab-btn px-3 py-1.5 font-exo font-bold text-gray-400 hover:text-cyan-300 text-xs whitespace-nowrap touch-target ios-button">SETTINGS</button>
+        </div>
+    </div>
+
+    <!-- Resolve Modal -->
+    <div id="resolve-modal" class="modal-container hidden">
+        <div class="modal-content">
+            <div class="p-3">
+                <div class="flex justify-between items-center mb-2.5">
+                    <h3 class="text-base font-exo font-bold text-gray-200">QUANTUM RESOLUTION</h3>
+                    <button type="button" id="close-resolve-modal" class="text-gray-400 hover:text-cyan-400 text-xs" title="Close resolve modal" aria-label="Close resolve modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="resolve-prediction-details" class="mb-3"></div>
+                <form id="resolve-form">
+                    <div class="mb-2.5">
+                        <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="open-price">OPEN PRICE</label>
+                        <input 
+                            type="number" 
+                            id="open-price" 
+                            step="0.01" 
+                            min="0"
+                            class="w-full px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input text-sm" 
+                            required
+                        >
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="close-price">CLOSE PRICE</label>
+                        <input 
+                            type="number" 
+                            id="close-price" 
+                            step="0.01" 
+                            min="0"
+                            class="w-full px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input text-sm" 
+                            required
+                        >
+                    </div>
+                    <div class="flex justify-end space-x-1.5">
+                        <button 
+                            type="button" 
+                            id="cancel-resolve" 
+                            class="px-2.5 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-300 font-exo font-bold rounded-lg transition-all text-xs ios-button"
+                        >
+                            CANCEL
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="px-2.5 py-1.5 bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-500 hover:to-cyan-500 text-white font-exo font-bold rounded-lg transition-all text-xs ios-button"
+                        >
+                            RESOLVE
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let predictions = JSON.parse(localStorage.getItem('stockPredictions')) || [];
+        let users = JSON.parse(localStorage.getItem('predictionUsers')) || {};
+        let currentUser = localStorage.getItem('currentPredictionUser') || 'Guest User';
+        let currentResolveId = null;
+        let livePriceInterval = null;
+        let currentStockSymbol = null;
+        let alphaVantageApiKey = '8HE88K05447IY34U';
+        let deferredPrompt = null;
+
+        // DOM Elements
+        const dashboardTab = document.getElementById('dashboard-tab');
+        const historyTab = document.getElementById('history-tab');
+        const leagueTab = document.getElementById('league-tab');
+        const leagueTabBottom = document.getElementById('league-tab-bottom');
+        const settingsTab = document.getElementById('settings-tab');
+        const settingsTabBottom = document.getElementById('settings-tab-bottom');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const historyContent = document.getElementById('history-content');
+        const leagueContent = document.getElementById('league-content');
+        const settingsContent = document.getElementById('settings-content');
+        const mainContent = document.getElementById('main-content');
+        const predictionForm = document.getElementById('prediction-form');
+        const resolveModal = document.getElementById('resolve-modal');
+        const resolveForm = document.getElementById('resolve-form');
+        const cancelResolve = document.getElementById('cancel-resolve');
+        const closeResolveModal = document.getElementById('close-resolve-modal');
+        const marketStatusText = document.getElementById('market-status-text');
+        const marketStatusIcon = document.getElementById('market-status-icon');
+        const predictionFormContainer = document.getElementById('prediction-form-container');
+        const checkSymbolBtn = document.getElementById('check-symbol');
+        const stockDetails = document.getElementById('stock-details');
+        const closeDetailsBtn = document.getElementById('close-details');
+        const marketProgress = document.getElementById('market-progress');
+        const currentUserElement = document.getElementById('current-user');
+        const userPointsS1Element = document.getElementById('user-points-s1');
+        const userPointsS2Element = document.getElementById('user-points-s2');
+        const refreshLeaderboard = document.getElementById('refresh-leaderboard');
+        const importUserData = document.getElementById('import-user-data');
+        const importData = document.getElementById('import-data');
+        const exportData = document.getElementById('export-data');
+        const copyData = document.getElementById('copy-data');
+        const userSettingsForm = document.getElementById('user-settings-form');
+        const resetData = document.getElementById('reset-data');
+        const toggleLivePriceBtn = document.getElementById('toggle-live-price');
+        const livePriceSection = document.getElementById('live-price-section');
+        const livePriceValue = document.getElementById('live-price-value');
+        const livePriceChange = document.getElementById('live-price-change');
+        const symbolInput = document.getElementById('symbol');
+        const symbolSearchResults = document.getElementById('symbol-search-results');
+        const symbolResultsList = document.getElementById('symbol-results-list');
+        const companyOverview = document.getElementById('company-overview');
+        const overviewContent = document.getElementById('overview-content');
+        const installBanner = document.getElementById('install-banner');
+        const installButton = document.getElementById('install-button');
+        const closeBanner = document.getElementById('close-banner');
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all content
+            dashboardContent.classList.add('hidden');
+            historyContent.classList.add('hidden');
+            leagueContent.classList.add('hidden');
+            settingsContent.classList.add('hidden');
+            
+            // Remove active class from all tabs
+            dashboardTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            historyTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            leagueTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            leagueTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            settingsTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            settingsTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
+            
+            // Show selected content and activate tab
+            if (tabName === 'dashboard') {
+                dashboardContent.classList.remove('hidden');
+                dashboardTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+            } else if (tabName === 'history') {
+                historyContent.classList.remove('hidden');
+                historyTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                renderHistory();
+            } else if (tabName === 'league') {
+                leagueContent.classList.remove('hidden');
+                leagueTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                leagueTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                updateExportData();
+                renderLeaderboard();
+            } else if (tabName === 'settings') {
+                settingsContent.classList.remove('hidden');
+                settingsTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                settingsTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                // Populate settings form
+                document.getElementById('username').value = currentUser;
+            }
+        }
+
+        dashboardTab.addEventListener('click', () => showTab('dashboard'));
+        historyTab.addEventListener('click', () => showTab('history'));
+        leagueTab.addEventListener('click', () => showTab('league'));
+        leagueTabBottom.addEventListener('click', () => showTab('league'));
+        settingsTab.addEventListener('click', () => showTab('settings'));
+        settingsTabBottom.addEventListener('click', () => showTab('settings'));
+
+        // Market time functions
+        function isMarketOpen() {
+            const now = new Date();
+            const options = { 
+                timeZone: 'America/New_York', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false,
+                weekday: 'long'
+            };
+            
+            const nyTimeString = now.toLocaleTimeString('en-US', { ...options, hour: 'numeric', minute: 'numeric' });
+            const nyWeekday = now.toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'long' });
+            
+            // Parse time
+            const [hours, minutes] = nyTimeString.split(':').map(Number);
+            const totalMinutes = hours * 60 + minutes;
+            
+            // Check if weekend
+            const isWeekend = nyWeekday === 'Saturday' || nyWeekday === 'Sunday';
+            
+            // Market hours: 9:30 AM to 4:00 PM ET
+            const marketOpenMinute = 9 * 60 + 30; // 9:30 AM
+            const marketCloseMinute = 16 * 60; // 4:00 PM
+            
+            return !isWeekend && totalMinutes >= marketOpenMinute && totalMinutes < marketCloseMinute;
+        }
+
+        function updateMarketStatus() {
+            const isOpen = isMarketOpen();
+            if (isOpen) {
+                marketStatusText.textContent = 'QUANTUM MARKET IS ACTIVE';
+                marketStatusIcon.innerHTML = '<i class="fas fa-circle text-green-500 animate-pulse"></i>';
+                predictionFormContainer.classList.add('opacity-70', 'pointer-events-none');
+                marketProgress.style.width = '100%';
+            } else {
+                marketStatusText.textContent = 'QUANTUM MARKET IS DORMANT';
+                marketStatusIcon.innerHTML = '<i class="fas fa-circle text-red-500"></i>';
+                predictionFormContainer.classList.remove('opacity-70', 'pointer-events-none');
+                marketProgress.style.width = '30%';
+            }
+        }
+
+        // Date utility functions
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function formatToYYYYMMDD(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getNextMarketDay() {
+            const now = new Date();
+            let date = new Date(now);
+            date.setDate(date.getDate() + 1);
+            
+            // Skip weekends
+            while (date.getDay() === 0 || date.getDay() === 6) {
+                date.setDate(date.getDate() + 1);
+            }
+            
+            return date;
+        }
+
+        function getNextFriday() {
+            const now = new Date();
+            let date = new Date(now);
+            const daysUntilFriday = (5 - date.getDay() + 7) % 7;
+            
+            if (daysUntilFriday === 0) {
+                // If today is Friday, go to next Friday
+                date.setDate(date.getDate() + 7);
+            } else {
+                date.setDate(date.getDate() + daysUntilFriday);
+            }
+            
+            return date;
+        }
+
+        // Scoring functions
+        function calculateSystem1Points(predictions) {
+            return predictions
+                .filter(p => p.status === 'resolved')
+                .reduce((total, prediction) => {
+                    const actual = prediction.closePrice > prediction.openPrice ? 'up' : 'down';
+                    return total + (prediction.prediction === actual ? 1 : -1);
+                }, 0);
+        }
+
+        function calculateSystem2Points(predictions) {
+            return predictions
+                .filter(p => p.status === 'resolved')
+                .reduce((total, prediction) => {
+                    const actualChange = ((prediction.closePrice - prediction.openPrice) / prediction.openPrice) * 100;
+                    if (prediction.prediction === 'up') {
+                        return total + actualChange; // + points for % increase, - points for % decrease
+                    } else {
+                        return total - actualChange; // + points for % decrease, - points for % increase
+                    }
+                }, 0);
+        }
+
+        // User management
+        function updateCurrentUser() {
+            currentUserElement.textContent = currentUser;
+            renderPoints();
+        }
+
+        function renderPoints() {
+            const userPredictions = predictions.filter(p => p.user === currentUser);
+            const pointsS1 = Math.round(calculateSystem1Points(userPredictions));
+            const pointsS2 = Math.round(calculateSystem2Points(userPredictions));
+            userPointsS1Element.textContent = pointsS1;
+            userPointsS2Element.textContent = pointsS2;
+        }
+
+        // Alpha Vantage API functions
+        async function searchStockSymbols(keyword) {
+            try {
+                const response = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${keyword}&apikey=${alphaVantageApiKey}`);
+                const data = await response.json();
+                
+                if (data.bestMatches && data.bestMatches.length > 0) {
+                    return data.bestMatches.slice(0, 5); // Return top 5 matches
+                }
+                return [];
+            } catch (error) {
+                console.error('Error searching stock symbols:', error);
+                return [];
+            }
+        }
+
+        async function getStockQuote(symbol) {
+            try {
+                const response = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${alphaVantageApiKey}`);
+                const data = await response.json();
+                
+                if (data['Global Quote']) {
+                    const quote = data['Global Quote'];
+                    return {
+                        symbol: quote['01. symbol'],
+                        price: parseFloat(quote['05. price']),
+                        change: parseFloat(quote['09. change']),
+                        changePercent: parseFloat(quote['10. change percent'].replace('%', ''))
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching stock quote:', error);
+                return null;
+            }
+        }
+
+        async function getCompanyOverview(symbol) {
+            try {
+                const response = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${alphaVantageApiKey}`);
+                const data = await response.json();
+                
+                if (data.Symbol) {
+                    return data;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching company overview:', error);
+                return null;
+            }
+        }
+
+        // Stock data functions
+        function renderStockDetails(symbol) {
+            const stockInfo = document.getElementById('stock-info');
+            stockInfo.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-spinner fa-spin text-lg mb-1.5"></i>
+                    <p class="text-xs">Fetching real-time data for ${symbol}...</p>
+                </div>
+            `;
+            
+            stockDetails.classList.remove('hidden');
+            currentStockSymbol = symbol;
+            
+            // Fetch real stock data
+            getStockQuote(symbol).then(stock => {
+                if (stock) {
+                    stockInfo.innerHTML = `
+                        <div class="grid grid-cols-1 gap-2.5">
+                            <div class="bg-gray-900/50 p-2.5 rounded-lg border border-cyan-500/20">
+                                <h5 class="font-exo font-bold text-cyan-400 text-xs mb-1">${stock.symbol}</h5>
+                                <div class="text-gray-400 text-[10px] mb-1">Real-time Data</div>
+                                <div class="text-base font-orbitron font-bold mt-1 text-white">$${stock.price.toFixed(2)}</div>
+                                <div class="mt-1 text-[10px] ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}">
+                                    ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)} (${stock.change >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%)
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <div class="bg-gray-900/50 p-1.5 rounded-lg border border-purple-500/20">
+                                    <div class="text-gray-400 text-[10px]">SYMBOL</div>
+                                    <div class="font-exo font-bold text-purple-400 text-[10px]">${stock.symbol}</div>
+                                </div>
+                                <div class="bg-gray-900/50 p-1.5 rounded-lg border border-purple-500/20">
+                                    <div class="text-gray-400 text-[10px]">PRICE</div>
+                                    <div class="font-exo font-bold text-purple-400 text-[10px]">$${stock.price.toFixed(2)}</div>
+                                </div>
+                                <div class="bg-gray-900/50 p-1.5 rounded-lg border border-purple-500/20">
+                                    <div class="text-gray-400 text-[10px]">CHANGE</div>
+                                    <div class="font-exo font-bold text-${stock.change >= 0 ? 'green' : 'red'}-400 text-[10px]">
+                                        ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="bg-gray-900/50 p-1.5 rounded-lg border border-purple-500/20">
+                                    <div class="text-gray-400 text-[10px]">CHANGE %</div>
+                                    <div class="font-exo font-bold text-${stock.change >= 0 ? 'green' : 'red'}-400 text-[10px]">
+                                        ${stock.change >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    renderStockChart(stock.symbol);
+                    updateLivePriceDisplay(stock.price, stock.change, stock.changePercent);
+                } else {
+                    stockInfo.innerHTML = `
+                        <div class="text-center py-5 text-red-400">
+                            <i class="fas fa-exclamation-triangle text-lg mb-1.5"></i>
+                            <p class="text-xs">Failed to fetch data for ${symbol}. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            // Fetch company overview
+            getCompanyOverview(symbol).then(overview => {
+                if (overview) {
+                    companyOverview.classList.remove('hidden');
+                    renderCompanyOverview(overview);
+                } else {
+                    companyOverview.classList.add('hidden');
+                }
+            });
+        }
+
+        function renderCompanyOverview(overview) {
+            overviewContent.innerHTML = `
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">Company</div>
+                        <div class="font-exo font-bold text-[10px] truncate">${overview.Name}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">Sector</div>
+                        <div class="font-exo font-bold text-[10px]">${overview.Sector || 'N/A'}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">Industry</div>
+                        <div class="font-exo font-bold text-[10px]">${overview.Industry || 'N/A'}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">Market Cap</div>
+                        <div class="font-exo font-bold text-[10px]">${overview.MarketCapitalization ? formatNumber(overview.MarketCapitalization) : 'N/A'}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">P/E Ratio</div>
+                        <div class="font-exo font-bold text-[10px]">${overview.PERatio || 'N/A'}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="text-[10px] text-purple-300">Dividend</div>
+                        <div class="font-exo font-bold text-[10px]">${overview.DividendYield ? (parseFloat(overview.DividendYield) * 100).toFixed(2) + '%' : 'N/A'}</div>
+                    </div>
+                </div>
+                <div class="mt-1.5 text-[10px] text-gray-400">
+                    <p class="line-clamp-2">${overview.Description || 'No description available.'}</p>
+                </div>
+            `;
+        }
+
+        function formatNumber(num) {
+            if (!num || num === 'None') return 'N/A';
+            const number = parseFloat(num);
+            if (number >= 1e9) {
+                return '$' + (number / 1e9).toFixed(2) + 'B';
+            } else if (number >= 1e6) {
+                return '$' + (number / 1e6).toFixed(2) + 'M';
+            } else {
+                return '$' + number.toLocaleString();
+            }
+        }
+
+        function renderStockChart(symbol) {
+            const chartContainer = document.getElementById('stock-chart');
+            chartContainer.innerHTML = `
+                <div class="text-center text-gray-500 py-5">
+                    <i class="fas fa-chart-line text-lg mb-1.5"></i>
+                    <p class="text-xs">Historical chart data not available in this demo</p>
+                </div>
+            `;
+        }
+
+        // Live price functions
+        function startLivePriceUpdates() {
+            if (livePriceInterval) {
+                clearInterval(livePriceInterval);
+            }
+            
+            // Update immediately
+            updateLivePrice();
+            
+            // Then update every 15 seconds
+            livePriceInterval = setInterval(updateLivePrice, 15000);
+            
+            toggleLivePriceBtn.innerHTML = '<i class="fas fa-pause"></i> STOP';
+            toggleLivePriceBtn.classList.remove('bg-cyan-600', 'hover:bg-cyan-500');
+            toggleLivePriceBtn.classList.add('bg-red-600', 'hover:bg-red-500');
+        }
+
+        function stopLivePriceUpdates() {
+            if (livePriceInterval) {
+                clearInterval(livePriceInterval);
+                livePriceInterval = null;
+            }
+            
+            toggleLivePriceBtn.innerHTML = '<i class="fas fa-play"></i> START';
+            toggleLivePriceBtn.classList.remove('bg-red-600', 'hover:bg-red-500');
+            toggleLivePriceBtn.classList.add('bg-cyan-600', 'hover:bg-cyan-500');
+        }
+
+        function updateLivePrice() {
+            if (currentStockSymbol) {
+                getStockQuote(currentStockSymbol).then(stock => {
+                    if (stock) {
+                        updateLivePriceDisplay(stock.price, stock.change, stock.changePercent);
+                    }
+                });
+            }
+        }
+
+        function updateLivePriceDisplay(price, change, changePercent) {
+            livePriceValue.textContent = `$${price.toFixed(2)}`;
+            
+            if (change >= 0) {
+                livePriceChange.textContent = `+${change.toFixed(2)} (+${changePercent.toFixed(2)}%)`;
+                livePriceChange.className = 'ml-1.5 text-[10px] text-green-400';
+            } else {
+                livePriceChange.textContent = `${change.toFixed(2)} (${changePercent.toFixed(2)}%)`;
+                livePriceChange.className = 'ml-1.5 text-[10px] text-red-400';
+            }
+        }
+
+        // Symbol search functions
+        function showSymbolSearchResults(results) {
+            if (results.length === 0) {
+                symbolResultsList.innerHTML = '<li class="px-2.5 py-1.5 text-gray-400 text-xs">No matches found</li>';
+            } else {
+                symbolResultsList.innerHTML = results.map(match => `
+                    <li class="symbol-result px-2.5 py-1.5 cursor-pointer hover:bg-cyan-900/30 transition-colors" 
+                        data-symbol="${match['1. symbol']}">
+                        <div class="font-exo font-bold text-xs">${match['1. symbol']}</div>
+                        <div class="text-[10px] text-gray-400 truncate">${match['2. name']}</div>
+                    </li>
+                `).join('');
+                
+                // Add click handlers to results
+                document.querySelectorAll('.symbol-result').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const symbol = item.dataset.symbol;
+                        symbolInput.value = symbol;
+                        symbolSearchResults.classList.add('hidden');
+                        renderStockDetails(symbol);
+                    });
+                });
+            }
+            
+            symbolSearchResults.classList.remove('hidden');
+        }
+
+        function hideSymbolSearchResults() {
+            symbolSearchResults.classList.add('hidden');
+        }
+
+        // Render functions
+        function renderPendingPredictions() {
+            const pendingPredictions = predictions.filter(p => p.status === 'pending' && p.user === currentUser);
+            const container = document.getElementById('pending-predictions-list');
+            
+            if (pendingPredictions.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-5">No pending quantum predictions in the system</p>';
+                return;
+            }
+            
+            container.innerHTML = pendingPredictions.map(prediction => {
+                const targetDate = new Date(prediction.targetDate);
+                const isPast = targetDate <= new Date();
+                const isUp = prediction.prediction === 'up';
+                
+                return `
+                    <div class="border border-cyan-500/20 rounded-xl p-2.5 hover:border-cyan-500/40 transition-all bg-gray-900/30 backdrop-blur-sm prediction-card">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center">
+                                    <span class="font-exo font-bold text-cyan-400 text-xs">${prediction.symbol}</span>
+                                    <span class="ml-1.5 px-1.5 py-0.5 bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-purple-300 text-[10px] font-exo font-bold rounded-full border border-purple-500/30">
+                                        ${prediction.period === 'day' ? 'TODAY' : 'WEEK'}
+                                    </span>
+                                </div>
+                                <div class="mt-1 flex items-center">
+                                    <span class="mr-1.5 text-[10px] ${isUp ? 'text-green-400' : 'text-red-400'}">
+                                        <i class="fas fa-arrow-${prediction.prediction} mr-1"></i>
+                                        ${prediction.prediction.toUpperCase()}
+                                    </span>
+                                    <span class="text-gray-400 text-[10px]">
+                                        <i class="far fa-calendar mr-1"></i>
+                                        ${formatDate(targetDate)}
+                                    </span>
+                                </div>
+                            </div>
+                            ${isPast ? `
+                                <button 
+                                    class="resolve-btn px-2 py-1 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-exo font-bold rounded-lg transition-all text-[10px]"
+                                    data-id="${prediction.id}"
+                                >
+                                    RESOLVE
+                                </button>
+                            ` : `
+                                <span class="px-2 py-1 bg-gradient-to-r from-yellow-600/50 to-orange-600/50 text-yellow-300 font-exo font-bold rounded-lg border border-yellow-500/30 text-[10px]">
+                                    PENDING
+                                </span>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.querySelectorAll('.resolve-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    openResolveModal(id);
+                });
+            });
+        }
+
+        function renderHistory() {
+            const resolvedPredictions = predictions.filter(p => p.status === 'resolved' && p.user === currentUser);
+            const container = document.getElementById('history-list');
+            
+            if (resolvedPredictions.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-5">No quantum predictions in the temporal archive</p>';
+                return;
+            }
+            
+            container.innerHTML = resolvedPredictions.map(prediction => {
+                const actual = prediction.closePrice > prediction.openPrice ? 'up' : 'down';
+                const isCorrect = prediction.prediction === actual;
+                const actualChange = ((prediction.closePrice - prediction.openPrice) / prediction.openPrice) * 100;
+                const system1Points = isCorrect ? 1 : -1;
+                const system2Points = prediction.prediction === 'up' ? actualChange : -actualChange;
+                
+                return `
+                    <div class="border border-cyan-500/20 rounded-xl p-2.5 hover:border-cyan-500/40 transition-all bg-gray-900/30 backdrop-blur-sm prediction-card">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center">
+                                    <span class="font-exo font-bold text-cyan-400 text-xs">${prediction.symbol}</span>
+                                    <span class="ml-1.5 px-1.5 py-0.5 bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-purple-300 text-[10px] font-exo font-bold rounded-full border border-purple-500/30">
+                                        ${prediction.period === 'day' ? 'TODAY' : 'WEEK'}
+                                    </span>
+                                </div>
+                                <div class="mt-1 flex items-center">
+                                    <span class="mr-1.5">
+                                        <span class="text-gray-400 mr-1 text-[10px]">PREDICTED:</span>
+                                        <span class="${prediction.prediction === 'up' ? 'text-green-400' : 'text-red-400'} text-[10px]">
+                                            <i class="fas fa-arrow-${prediction.prediction} mr-1"></i>
+                                            ${prediction.prediction.toUpperCase()}
+                                        </span>
+                                    </span>
+                                    <span>
+                                        <span class="text-gray-400 mr-1 text-[10px]">ACTUAL:</span>
+                                        <span class="${actual === 'up' ? 'text-green-400' : 'text-red-400'} text-[10px]">
+                                            <i class="fas fa-arrow-${actual} mr-1"></i>
+                                            ${actual.toUpperCase()}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="mt-1 text-[10px] text-gray-400">
+                                    <span class="mr-1.5">
+                                        <i class="fas fa-coins mr-1 text-yellow-400"></i>
+                                        OPEN: $${prediction.openPrice.toFixed(2)}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-chart-line mr-1 text-cyan-400"></i>
+                                        CLOSE: $${prediction.closePrice.toFixed(2)}
+                                    </span>
+                                </div>
+                                <div class="mt-1 text-[10px] text-gray-400">
+                                    <i class="fas fa-percentage mr-1 text-purple-400"></i>
+                                    CHANGE: ${actualChange >= 0 ? '+' : ''}${actualChange.toFixed(2)}%
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] text-gray-400 mb-0.5">S1: <span class="${system1Points >= 0 ? 'text-green-400' : 'text-red-400'}">${system1Points >= 0 ? '+' : ''}${system1Points}</span></div>
+                                <div class="text-[10px] text-gray-400 mb-0.5">S2: <span class="${system2Points >= 0 ? 'text-green-400' : 'text-red-400'}">${system2Points >= 0 ? '+' : ''}${system2Points.toFixed(1)}</span></div>
+                                <div class="text-[10px] text-gray-500 mt-1">
+                                    ${formatDate(new Date(prediction.targetDate))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // League functions
+        function updateExportData() {
+            const userPredictions = predictions.filter(p => p.user === currentUser);
+            const userData = {
+                user: currentUser,
+                predictions: userPredictions,
+                pointsS1: Math.round(calculateSystem1Points(userPredictions)),
+                pointsS2: Math.round(calculateSystem2Points(userPredictions))
+            };
+            exportData.value = JSON.stringify(userData);
+        }
+
+        function importUserDataFromText() {
+            try {
+                const data = JSON.parse(importData.value);
+                if (data.user && data.predictions && Array.isArray(data.predictions)) {
+                    // Add user to users object
+                    users[data.user] = {
+                        predictions: data.predictions,
+                        pointsS1: data.pointsS1 || 0,
+                        pointsS2: data.pointsS2 || 0
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('predictionUsers', JSON.stringify(users));
+                    
+                    // Clear import field
+                    importData.value = '';
+                    
+                    // Refresh leaderboard
+                    renderLeaderboard();
+                    
+                    alert(`Successfully imported data for user: ${data.user}`);
+                } else {
+                    throw new Error('Invalid data format');
+                }
+            } catch (error) {
+                alert('Invalid data format. Please check the imported text.');
+            }
+        }
+
+        function renderLeaderboard() {
+            // Get all users including current user
+            const allUsers = {...users};
+            const currentUserPredictions = predictions.filter(p => p.user === currentUser);
+            allUsers[currentUser] = {
+                predictions: currentUserPredictions,
+                pointsS1: Math.round(calculateSystem1Points(currentUserPredictions)),
+                pointsS2: Math.round(calculateSystem2Points(currentUserPredictions))
+            };
+            
+            // Convert to array and sort by points
+            const userList = Object.entries(allUsers)
+                .map(([username, userData]) => ({
+                    username,
+                    pointsS1: userData.pointsS1 || 0,
+                    pointsS2: userData.pointsS2 || 0,
+                    predictionCount: userData.predictions ? userData.predictions.length : 0
+                }))
+                .sort((a, b) => b.pointsS1 - a.pointsS1); // Sort by System 1 points
+            
+            const container = document.getElementById('leaderboard');
+            
+            if (userList.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-5">No league data available. Import user data to see rankings.</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="bg-gray-900/50 rounded-lg overflow-hidden">
+                    <div class="grid grid-cols-12 bg-gray-800/50 px-2.5 py-1.5 font-exo font-bold text-gray-300 text-[10px]">
+                        <div class="col-span-1">RANK</div>
+                        <div class="col-span-5">USER</div>
+                        <div class="col-span-2 text-center">S1</div>
+                        <div class="col-span-2 text-center">S2</div>
+                        <div class="col-span-2 text-center">PRED</div>
+                    </div>
+                    ${userList.map((user, index) => `
+                        <div class="grid grid-cols-12 px-2.5 py-2 border-b border-gray-700/50 hover:bg-gray-800/30 transition-all ${user.username === currentUser ? 'bg-cyan-900/20' : ''}">
+                            <div class="col-span-1 flex items-center">
+                                ${index === 0 ? '<i class="fas fa-crown text-yellow-400 mr-1 text-[10px]"></i>' : 
+                                  index === 1 ? '<i class="fas fa-medal text-gray-300 mr-1 text-[10px]"></i>' : 
+                                  index === 2 ? '<i class="fas fa-medal text-amber-600 mr-1 text-[10px]"></i>' : 
+                                  `${index + 1}`}
+                            </div>
+                            <div class="col-span-5 font-exo font-bold text-[10px] ${user.username === currentUser ? 'text-cyan-400' : 'text-gray-300'} truncate">
+                                ${user.username}
+                                ${user.username === currentUser ? '<i class="fas fa-user ml-1 text-cyan-400 text-[10px]"></i>' : ''}
+                            </div>
+                            <div class="col-span-2 text-center font-orbitron font-bold text-[10px] ${user.pointsS1 >= 0 ? 'text-green-400' : 'text-red-400'}">
+                                ${user.pointsS1 >= 0 ? '+' : ''}${user.pointsS1}
+                            </div>
+                            <div class="col-span-2 text-center font-orbitron font-bold text-[10px] ${user.pointsS2 >= 0 ? 'text-green-400' : 'text-red-400'}">
+                                ${user.pointsS2 >= 0 ? '+' : ''}${Math.round(user.pointsS2)}
+                            </div>
+                            <div class="col-span-2 text-center text-gray-400 text-[10px]">
+                                ${user.predictionCount}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function openResolveModal(id) {
+            const prediction = predictions.find(p => p.id === id);
+            if (!prediction) return;
+            
+            currentResolveId = id;
+            const targetDate = new Date(prediction.targetDate);
+            
+            document.getElementById('resolve-prediction-details').innerHTML = `
+                <div class="bg-gray-900/50 p-2.5 rounded-lg border border-cyan-500/20 mb-2.5">
+                    <div class="font-exo font-bold text-cyan-400 text-xs">${prediction.symbol}</div>
+                    <div class="text-gray-400 text-[10px] mt-1">
+                        Predicted ${prediction.prediction.toUpperCase()} for ${prediction.period === 'day' ? 'today' : 'this week'}
+                    </div>
+                    <div class="text-gray-400 text-[10px] mt-1">
+                        Target Date: ${formatDate(targetDate)}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('open-price').value = '';
+            document.getElementById('close-price').value = '';
+            resolveModal.classList.remove('hidden');
+        }
+
+        function closeResolveModal() {
+            resolveModal.classList.add('hidden');
+            currentResolveId = null;
+        }
+
+        // Install App functionality
+        function showInstallBanner() {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                return;
+            }
+            
+            // Check if user already dismissed
+            if (localStorage.getItem('installBannerDismissed')) {
+                return;
+            }
+            
+            // Show banner for iOS Safari
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+                installBanner.classList.remove('hidden');
+            }
+        }
+
+        // Event Listeners
+        checkSymbolBtn.addEventListener('click', () => {
+            const symbol = symbolInput.value.trim();
+            if (symbol) {
+                renderStockDetails(symbol);
+            } else {
+                alert('Please enter a stock symbol');
+            }
+        });
+
+        symbolInput.addEventListener('input', async (e) => {
+            const keyword = e.target.value.trim();
+            if (keyword.length > 1) {
+                const results = await searchStockSymbols(keyword);
+                showSymbolSearchResults(results);
+            } else {
+                hideSymbolSearchResults();
+            }
+        });
+
+        // Close symbol search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!symbolInput.contains(e.target) && !symbolSearchResults.contains(e.target)) {
+                hideSymbolSearchResults();
+            }
+        });
+
+        closeDetailsBtn.addEventListener('click', () => {
+            stockDetails.classList.add('hidden');
+            stopLivePriceUpdates();
+            currentStockSymbol = null;
+        });
+
+        toggleLivePriceBtn.addEventListener('click', () => {
+            if (livePriceInterval) {
+                stopLivePriceUpdates();
+            } else {
+                startLivePriceUpdates();
+            }
+        });
+
+        predictionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const symbol = symbolInput.value.toUpperCase().trim();
+            const period = document.querySelector('input[name="period"]:checked').value;
+            const predictionElement = document.querySelector('input[name="prediction"]:checked');
+            let prediction = predictionElement ? predictionElement.value : null;
+            
+            // If no prediction selected, assign random
+            if (!prediction) {
+                prediction = Math.random() > 0.5 ? 'up' : 'down';
+                alert(`No prediction selected. System assigned: ${prediction.toUpperCase()}`);
+            }
+            
+            if (!symbol) return;
+            
+            const targetDate = period === 'day' ? getNextMarketDay() : getNextFriday();
+            
+            const newPrediction = {
+                id: Date.now(),
+                symbol,
+                prediction,
+                period,
+                madeAt: new Date().toISOString(),
+                targetDate: formatToYYYYMMDD(targetDate),
+                openPrice: null,
+                closePrice: null,
+                status: 'pending',
+                user: currentUser
+            };
+            
+            predictions.push(newPrediction);
+            localStorage.setItem('stockPredictions', JSON.stringify(predictions));
+            
+            predictionForm.reset();
+            document.querySelector('input[name="period"][value="day"]').checked = true;
+            stockDetails.classList.add('hidden');
+            stopLivePriceUpdates();
+            currentStockSymbol = null;
+            
+            renderPoints();
+            renderPendingPredictions();
+            
+            alert(`Quantum prediction launched for ${symbol} - ${prediction.toUpperCase()} ${period === 'day' ? 'today' : 'this week'}!`);
+        });
+
+        resolveForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const openPrice = parseFloat(document.getElementById('open-price').value);
+            const closePrice = parseFloat(document.getElementById('close-price').value);
+            
+            if (isNaN(openPrice) || isNaN(closePrice) || openPrice <= 0 || closePrice <= 0) {
+                alert('Please enter valid prices');
+                return;
+            }
+            
+            const predictionIndex = predictions.findIndex(p => p.id === currentResolveId);
+            if (predictionIndex !== -1) {
+                predictions[predictionIndex].openPrice = openPrice;
+                predictions[predictionIndex].closePrice = closePrice;
+                predictions[predictionIndex].status = 'resolved';
+                
+                localStorage.setItem('stockPredictions', JSON.stringify(predictions));
+                
+                renderPoints();
+                renderPendingPredictions();
+                renderHistory();
+                
+                closeResolveModal();
+                
+                const actual = closePrice > openPrice ? 'up' : 'down';
+                const isCorrect = predictions[predictionIndex].prediction === actual;
+                const actualChange = ((closePrice - openPrice) / openPrice) * 100;
+                const system1Points = isCorrect ? 1 : -1;
+                const system2Points = predictions[predictionIndex].prediction === 'up' ? actualChange : -actualChange;
+                
+                alert(`Prediction resolved!\nActual movement: ${actual.toUpperCase()}\nChange: ${actualChange >= 0 ? '+' : ''}${actualChange.toFixed(2)}%\n\nSystem 1 Points: ${system1Points >= 0 ? '+' : ''}${system1Points}\nSystem 2 Points: ${system2Points >= 0 ? '+' : ''}${system2Points.toFixed(1)}`);
+            }
+        });
+
+        cancelResolve.addEventListener('click', closeResolveModal);
+        closeResolveModal.addEventListener('click', closeResolveModal);
+
+        refreshLeaderboard.addEventListener('click', () => {
+            renderLeaderboard();
+            alert('Leaderboard refreshed!');
+        });
+
+        importUserData.addEventListener('click', importUserDataFromText);
+
+        copyData.addEventListener('click', () => {
+            exportData.select();
+            document.execCommand('copy');
+            alert('Your data has been copied to clipboard. Share it with friends!');
+        });
+
+        userSettingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUsername = document.getElementById('username').value.trim();
+            if (newUsername && newUsername !== currentUser) {
+                currentUser = newUsername;
+                localStorage.setItem('currentPredictionUser', currentUser);
+                updateCurrentUser();
+                updateExportData();
+                alert(`Username updated to: ${currentUser}`);
+            }
+        });
+
+        resetData.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+                predictions = predictions.filter(p => p.user !== currentUser);
+                localStorage.setItem('stockPredictions', JSON.stringify(predictions));
+                renderPoints();
+                renderPendingPredictions();
+                renderHistory();
+                renderLeaderboard();
+                alert('Your data has been reset.');
+            }
+        });
+
+        // Install banner events
+        installButton.addEventListener('click', async () => {
+            // Check if we can use the native install prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                
+                if (outcome === 'accepted') {
+                    installBanner.classList.add('hidden');
+                    localStorage.setItem('installBannerDismissed', 'true');
+                }
+            } else {
+                // For iOS Safari, show instructions
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+                
+                if (isIOS && !isStandalone) {
+                    // Create a more detailed instruction modal
+                    const instructionModal = document.createElement('div');
+                    instructionModal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+                    instructionModal.innerHTML = `
+                        <div class="bg-gray-800 rounded-2xl p-6 max-w-sm w-full">
+                            <div class="text-center mb-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-download text-white text-2xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-2">Install Stock Predictor</h3>
+                                <p class="text-gray-300 text-sm">Follow these steps to add the app to your home screen:</p>
+                            </div>
+                            <div class="space-y-3 text-sm text-gray-300">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">1</div>
+                                    <p>Tap the <strong>Share</strong> button at the bottom of Safari</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">2</div>
+                                    <p>Scroll down and tap <strong>"Add to Home Screen"</strong></p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">3</div>
+                                    <p>Tap <strong>"Add"</strong> to confirm</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3 mt-6">
+                                <button id="close-instruction" class="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg font-bold transition-all">Got it!</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(instructionModal);
+                    
+                    // Add haptic feedback
+                    if (navigator.vibrate) {
+                        navigator.vibrate([50, 100, 50]);
+                    }
+                    
+                    // Close instruction modal
+                    document.getElementById('close-instruction').addEventListener('click', () => {
+                        document.body.removeChild(instructionModal);
+                        installBanner.classList.add('hidden');
+                        localStorage.setItem('installBannerDismissed', 'true');
+                    });
+                } else {
+                    alert('To install this app:\n1. Tap the Share button in Safari\n2. Select "Add to Home Screen"\n3. Tap "Add"');
+                    installBanner.classList.add('hidden');
+                    localStorage.setItem('installBannerDismissed', 'true');
+                }
+            }
+        });
+
+        closeBanner.addEventListener('click', () => {
+            installBanner.classList.add('hidden');
+            localStorage.setItem('installBannerDismissed', 'true');
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Enhanced Install Prompt for iOS
+        function showInstallBanner() {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                return;
+            }
+            
+            // Check if user already dismissed
+            if (localStorage.getItem('installBannerDismissed')) {
+                return;
+            }
+            
+            // Show banner for iOS Safari
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+                installBanner.classList.remove('hidden');
+                
+                // Add haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+        }
+
+        // Handle beforeinstallprompt for Android/Chrome
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install banner for Android users too
+            if (!localStorage.getItem('installBannerDismissed')) {
+                installBanner.classList.remove('hidden');
+            }
+        });
+
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installBanner.classList.add('hidden');
+            localStorage.setItem('installBannerDismissed', 'true');
+            
+            // Show success message
+            alert('App installed successfully! You can now access it from your home screen.');
+        });
+
+        // Initialize
+        function init() {
+            updateMarketStatus();
+            updateCurrentUser();
+            renderPendingPredictions();
+            updateExportData();
+            
+            setInterval(updateMarketStatus, 60000);
+            
+            // Show dashboard by default
+            showTab('dashboard');
+            
+            // Show install banner for iOS users
+            setTimeout(showInstallBanner, 2000);
+            
+            // Add touch event listeners for better mobile experience
+            addTouchOptimizations();
+        }
+
+        // Add touch optimizations
+        function addTouchOptimizations() {
+            // Prevent double-tap zoom on buttons
+            document.querySelectorAll('button, .ios-button').forEach(button => {
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                }, { passive: false });
+            });
+            
+            // Add haptic feedback for important actions
+            document.querySelectorAll('.resolve-btn, #submit-prediction, .ios-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (navigator.vibrate) {
+                        navigator.vibrate(30);
+                    }
+                });
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
