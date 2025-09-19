@@ -558,7 +558,7 @@
                                 <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="username">
                                     <i class="fas fa-user-edit mr-1 text-cyan-400"></i>USERNAME
                                 </label>
-                                <input 
+                                <input
                                     type="text" 
                                     id="username" 
                                     class="w-full px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm" 
@@ -569,6 +569,27 @@
                                     autocapitalize="off"
                                     spellcheck="false"
                                 >
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="alpha-vantage-api-key">
+                                    <i class="fas fa-key mr-1 text-cyan-400"></i>ALPHA VANTAGE API KEY
+                                </label>
+                                <input
+                                    type="password"
+                                    id="alpha-vantage-api-key"
+                                    class="w-full px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm"
+                                    placeholder="Enter your API key"
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    spellcheck="false"
+                                >
+                                <p class="mt-1 text-[10px] text-gray-400">
+                                    Get a free key at
+                                    <a class="text-cyan-300 underline" href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener noreferrer">Alpha Vantage</a>.
+                                    Stored securely on this device only.
+                                </p>
                             </div>
                             
                             <div>
@@ -697,7 +718,10 @@
         let currentResolveId = null;
         let livePriceInterval = null;
         let currentStockSymbol = null;
-        let alphaVantageApiKey = '8HE88K05447IY34U';
+        const DEFAULT_ALPHA_VANTAGE_API_KEY = '8HE88K05447IY34U';
+        const storedAlphaVantageApiKey = (localStorage.getItem('alphaVantageApiKey') || '').replace(/\s+/g, '');
+        let alphaVantageApiKey = storedAlphaVantageApiKey || DEFAULT_ALPHA_VANTAGE_API_KEY;
+        let hasShownMissingApiKeyAlert = false;
         let deferredPrompt = null;
 
         // DOM Elements
@@ -746,6 +770,11 @@
         const installBanner = document.getElementById('install-banner');
         const installButton = document.getElementById('install-button');
         const closeBanner = document.getElementById('close-banner');
+        const alphaVantageApiKeyInput = document.getElementById('alpha-vantage-api-key');
+
+        if (alphaVantageApiKeyInput) {
+            alphaVantageApiKeyInput.value = storedAlphaVantageApiKey || DEFAULT_ALPHA_VANTAGE_API_KEY;
+        }
 
         // Tab switching
         function showTab(tabName) {
@@ -792,6 +821,24 @@
         leagueTabBottom.addEventListener('click', () => showTab('league'));
         settingsTab.addEventListener('click', () => showTab('settings'));
         settingsTabBottom.addEventListener('click', () => showTab('settings'));
+
+        function ensureAlphaVantageApiKey(showAlert = true) {
+            if (alphaVantageApiKey && alphaVantageApiKey.trim() !== '') {
+                hasShownMissingApiKeyAlert = false;
+                return true;
+            }
+
+            if (showAlert && !hasShownMissingApiKeyAlert) {
+                alert('Live market data requires an Alpha Vantage API key. Please open Settings and add your key.');
+                hasShownMissingApiKeyAlert = true;
+                showTab('settings');
+                if (alphaVantageApiKeyInput) {
+                    alphaVantageApiKeyInput.focus();
+                }
+            }
+
+            return false;
+        }
 
         // Market time functions
         function isMarketOpen() {
@@ -920,6 +967,9 @@
 
         // Alpha Vantage API functions
         async function searchStockSymbols(keyword) {
+            if (!ensureAlphaVantageApiKey(false)) {
+                return [];
+            }
             try {
                 const response = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${keyword}&apikey=${alphaVantageApiKey}`);
                 const data = await response.json();
@@ -935,6 +985,9 @@
         }
 
         async function getStockQuote(symbol) {
+            if (!ensureAlphaVantageApiKey(false)) {
+                return null;
+            }
             try {
                 const response = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${alphaVantageApiKey}`);
                 const data = await response.json();
@@ -956,6 +1009,9 @@
         }
 
         async function getCompanyOverview(symbol) {
+            if (!ensureAlphaVantageApiKey(false)) {
+                return null;
+            }
             try {
                 const response = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${alphaVantageApiKey}`);
                 const data = await response.json();
@@ -973,6 +1029,17 @@
         // Stock data functions
         function renderStockDetails(symbol) {
             const stockInfo = document.getElementById('stock-info');
+
+            if (!ensureAlphaVantageApiKey()) {
+                stockInfo.innerHTML = `
+                    <div class="text-center py-5 text-yellow-300">
+                        <i class="fas fa-key text-lg mb-1.5"></i>
+                        <p class="text-xs">Add your Alpha Vantage API key in Settings to fetch live market data.</p>
+                    </div>
+                `;
+                stockDetails.classList.remove('hidden');
+                return;
+            }
             stockInfo.innerHTML = `
                 <div class="text-center py-5">
                     <i class="fas fa-spinner fa-spin text-lg mb-1.5"></i>
@@ -1102,16 +1169,24 @@
 
         // Live price functions
         function startLivePriceUpdates() {
+            if (!currentStockSymbol) {
+                return;
+            }
+
+            if (!ensureAlphaVantageApiKey()) {
+                return;
+            }
+
             if (livePriceInterval) {
                 clearInterval(livePriceInterval);
             }
-            
+
             // Update immediately
             updateLivePrice();
-            
+
             // Then update every 15 seconds
             livePriceInterval = setInterval(updateLivePrice, 15000);
-            
+
             toggleLivePriceBtn.innerHTML = '<i class="fas fa-pause"></i> STOP';
             toggleLivePriceBtn.classList.remove('bg-cyan-600', 'hover:bg-cyan-500');
             toggleLivePriceBtn.classList.add('bg-red-600', 'hover:bg-red-500');
@@ -1129,13 +1204,20 @@
         }
 
         function updateLivePrice() {
-            if (currentStockSymbol) {
-                getStockQuote(currentStockSymbol).then(stock => {
-                    if (stock) {
-                        updateLivePriceDisplay(stock.price, stock.change, stock.changePercent);
-                    }
-                });
+            if (!currentStockSymbol) {
+                return;
             }
+
+            if (!ensureAlphaVantageApiKey(false)) {
+                stopLivePriceUpdates();
+                return;
+            }
+
+            getStockQuote(currentStockSymbol).then(stock => {
+                if (stock) {
+                    updateLivePriceDisplay(stock.price, stock.change, stock.changePercent);
+                }
+            });
         }
 
         function updateLivePriceDisplay(price, change, changePercent) {
@@ -1477,6 +1559,10 @@
         symbolInput.addEventListener('input', async (e) => {
             const keyword = e.target.value.trim();
             if (keyword.length > 1) {
+                if (!ensureAlphaVantageApiKey()) {
+                    hideSymbolSearchResults();
+                    return;
+                }
                 const results = await searchStockSymbols(keyword);
                 showSymbolSearchResults(results);
             } else {
@@ -1605,13 +1691,41 @@
         userSettingsForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const newUsername = document.getElementById('username').value.trim();
+            const rawApiKey = alphaVantageApiKeyInput ? alphaVantageApiKeyInput.value.trim() : '';
+            const sanitizedApiKey = rawApiKey.replace(/\s+/g, '');
+            const updates = [];
+
             if (newUsername && newUsername !== currentUser) {
                 currentUser = newUsername;
                 localStorage.setItem('currentPredictionUser', currentUser);
                 updateCurrentUser();
                 updateExportData();
-                alert(`Username updated to: ${currentUser}`);
+                updates.push(`Username updated to: ${currentUser}`);
             }
+
+            if (sanitizedApiKey !== alphaVantageApiKey) {
+                if (sanitizedApiKey) {
+                    alphaVantageApiKey = sanitizedApiKey;
+                    localStorage.setItem('alphaVantageApiKey', alphaVantageApiKey);
+                    updates.push('Alpha Vantage API key saved.');
+                } else {
+                    localStorage.removeItem('alphaVantageApiKey');
+                    alphaVantageApiKey = DEFAULT_ALPHA_VANTAGE_API_KEY;
+                    updates.push('Alpha Vantage API key reset to default test key.');
+                }
+
+                hasShownMissingApiKeyAlert = false;
+            }
+
+            if (alphaVantageApiKeyInput) {
+                alphaVantageApiKeyInput.value = alphaVantageApiKey;
+            }
+
+            if (updates.length === 0) {
+                updates.push('No changes detected.');
+            }
+
+            alert(updates.join('\n'));
         });
 
         resetData.addEventListener('click', () => {
