@@ -251,6 +251,7 @@
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
             touch-action: pan-y;
+            scrollbar-gutter: stable both;
         }
 
         /* Smooth scrolling for iOS */
@@ -275,6 +276,17 @@
             top: calc(100% + 0.5rem);
             left: 0;
             right: 0;
+            touch-action: pan-y;
+        }
+
+        #symbol-search-results.symbol-search-results--above {
+            top: auto;
+            bottom: calc(100% + 0.5rem);
+        }
+
+        .touch-feedback-active {
+            transform: scale(0.97);
+            opacity: 0.92;
         }
 
         [class*='text-[10px]'] {
@@ -464,32 +476,34 @@
                                     <label class="block text-gray-300 font-exo font-medium mb-1 text-xs" for="symbol">
                                         <i class="fas fa-chart-line mr-1 text-cyan-400"></i>STOCK SYMBOL
                                     </label>
-                                    <div class="flex relative">
-                                        <input 
-                                            type="text" 
-                                            id="symbol" 
-                                            class="flex-1 px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-l-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm" 
-                                            placeholder="e.g. AAPL, GOOGL"
-                                            required
-                                            autocomplete="off"
-                                            autocorrect="off"
-                                            autocapitalize="off"
-                                            spellcheck="false"
-                                        >
-                                        <button 
-                                            type="button" 
-                                            id="check-symbol" 
-                                            class="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 px-2.5 py-2 rounded-r-lg transition-all duration-300 font-exo font-bold ios-button text-sm"
-                                            title="Search for stock symbol"
-                                            aria-label="Search for stock symbol"
-                                        >
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                    <!-- Symbol Search Results -->
-                                    <div id="symbol-search-results" class="mt-2 bg-gray-900/90 border border-cyan-500/30 rounded-lg absolute z-20 w-full hidden shadow-lg" role="presentation">
-                                        <div class="symbol-results-scroll">
-                                            <ul id="symbol-results-list" class="py-1" role="listbox"></ul>
+                                    <div id="symbol-input-wrapper" class="relative">
+                                        <div class="flex">
+                                            <input
+                                                type="text"
+                                                id="symbol"
+                                                class="flex-1 px-2.5 py-2 bg-gray-900/70 border border-cyan-500/30 rounded-l-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white font-exo backdrop-blur-sm ios-input ios-fix-input text-sm"
+                                                placeholder="e.g. AAPL, GOOGL"
+                                                required
+                                                autocomplete="off"
+                                                autocorrect="off"
+                                                autocapitalize="off"
+                                                spellcheck="false"
+                                            >
+                                            <button
+                                                type="button"
+                                                id="check-symbol"
+                                                class="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 px-2.5 py-2 rounded-r-lg transition-all duration-300 font-exo font-bold ios-button text-sm"
+                                                title="Search for stock symbol"
+                                                aria-label="Search for stock symbol"
+                                            >
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                        <!-- Symbol Search Results -->
+                                        <div id="symbol-search-results" class="bg-gray-900/90 border border-cyan-500/30 rounded-lg absolute z-30 w-full hidden shadow-lg" role="presentation" aria-hidden="true">
+                                            <div class="symbol-results-scroll">
+                                                <ul id="symbol-results-list" class="py-1" role="listbox"></ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -911,6 +925,10 @@
         let hasShownMissingApiKeyAlert = false;
         let deferredPrompt = null;
         const LEAGUE_EXPORT_VERSION = 1;
+        const SYMBOL_RESULTS_ABOVE_CLASS = 'symbol-search-results--above';
+        const SYMBOL_RESULTS_MIN_HEIGHT = 120;
+        const SYMBOL_RESULTS_MAX_HEIGHT = 288;
+        const SYMBOL_RESULTS_VIEWPORT_RATIO = 0.6;
 
         // DOM Elements
         const dashboardTab = document.getElementById('dashboard-tab');
@@ -952,8 +970,10 @@
         const livePriceValue = document.getElementById('live-price-value');
         const livePriceChange = document.getElementById('live-price-change');
         const symbolInput = document.getElementById('symbol');
+        const symbolInputWrapper = document.getElementById('symbol-input-wrapper');
         const symbolSearchResults = document.getElementById('symbol-search-results');
         const symbolResultsList = document.getElementById('symbol-results-list');
+        const symbolResultsScroll = symbolSearchResults ? symbolSearchResults.querySelector('.symbol-results-scroll') : null;
         const companyOverview = document.getElementById('company-overview');
         const overviewContent = document.getElementById('overview-content');
         const installBanner = document.getElementById('install-banner');
@@ -1386,7 +1406,70 @@
         }
 
         // Symbol search functions
+        function updateSymbolSearchDropdownPlacement() {
+            if (!symbolSearchResults || !symbolResultsScroll || !symbolInputWrapper) {
+                return;
+            }
+
+            const gapPx = 8;
+            const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            const wrapperRect = symbolInputWrapper.getBoundingClientRect();
+            const viewportCap = Math.min(viewportHeight * SYMBOL_RESULTS_VIEWPORT_RATIO, SYMBOL_RESULTS_MAX_HEIGHT);
+
+            const clampHeight = (space) => {
+                if (space <= 0) {
+                    return 0;
+                }
+
+                const limited = Math.min(space, viewportCap);
+
+                if (space < SYMBOL_RESULTS_MIN_HEIGHT) {
+                    return Math.min(limited, Math.max(space, 0));
+                }
+
+                return Math.max(limited, SYMBOL_RESULTS_MIN_HEIGHT);
+            };
+
+            const spaceBelow = viewportHeight - wrapperRect.bottom - gapPx;
+            const spaceAbove = wrapperRect.top - gapPx;
+
+            let dropdownHeight = clampHeight(spaceBelow);
+            let placeAbove = false;
+
+            if (dropdownHeight < SYMBOL_RESULTS_MIN_HEIGHT) {
+                const heightAbove = clampHeight(spaceAbove);
+                if (heightAbove > dropdownHeight) {
+                    dropdownHeight = heightAbove;
+                    placeAbove = heightAbove > 0;
+                }
+            }
+
+            if (dropdownHeight <= 0) {
+                dropdownHeight = Math.min(viewportCap, SYMBOL_RESULTS_MIN_HEIGHT);
+            }
+
+            symbolResultsScroll.style.maxHeight = `${Math.round(dropdownHeight)}px`;
+
+            if (placeAbove) {
+                symbolSearchResults.classList.add(SYMBOL_RESULTS_ABOVE_CLASS);
+            } else {
+                symbolSearchResults.classList.remove(SYMBOL_RESULTS_ABOVE_CLASS);
+            }
+        }
+
+        function handleSymbolResultsViewportChange() {
+            if (!symbolSearchResults || symbolSearchResults.classList.contains('hidden')) {
+                return;
+            }
+
+            updateSymbolSearchDropdownPlacement();
+        }
+
         function showSymbolSearchResults(results) {
+            if (!symbolSearchResults || !symbolResultsList) {
+                return;
+            }
+
             if (results.length === 0) {
                 symbolResultsList.innerHTML = '<li class="px-2.5 py-1.5 text-gray-400 text-xs">No matches found</li>';
             } else {
@@ -1397,23 +1480,41 @@
                         <div class="text-[10px] text-gray-400 truncate">${match['2. name']}</div>
                     </li>
                 `).join('');
-                
-                // Add click handlers to results
-                document.querySelectorAll('.symbol-result').forEach(item => {
+
+                symbolResultsList.querySelectorAll('.symbol-result').forEach((item) => {
                     item.addEventListener('click', () => {
                         const symbol = item.dataset.symbol;
                         symbolInput.value = symbol;
-                        symbolSearchResults.classList.add('hidden');
+                        hideSymbolSearchResults();
                         renderStockDetails(symbol);
                     });
                 });
             }
-            
+
+            updateSymbolSearchDropdownPlacement();
             symbolSearchResults.classList.remove('hidden');
+            symbolSearchResults.setAttribute('aria-hidden', 'false');
+
+            if (symbolResultsScroll) {
+                symbolResultsScroll.scrollTop = 0;
+            }
+
+            applyTouchOptimizationsToTree(symbolResultsList);
         }
 
         function hideSymbolSearchResults() {
+            if (!symbolSearchResults) {
+                return;
+            }
+
             symbolSearchResults.classList.add('hidden');
+            symbolSearchResults.classList.remove(SYMBOL_RESULTS_ABOVE_CLASS);
+            symbolSearchResults.setAttribute('aria-hidden', 'true');
+
+            if (symbolResultsScroll) {
+                symbolResultsScroll.style.maxHeight = '';
+                symbolResultsScroll.scrollTop = 0;
+            }
         }
 
         // Render functions
@@ -1765,12 +1866,24 @@
             }
         });
 
+        symbolInput.addEventListener('focus', handleSymbolResultsViewportChange);
+        symbolInput.addEventListener('click', handleSymbolResultsViewportChange);
+
         // Close symbol search when clicking outside
         document.addEventListener('click', (e) => {
             if (!symbolInput.contains(e.target) && !symbolSearchResults.contains(e.target)) {
                 hideSymbolSearchResults();
             }
         });
+
+        window.addEventListener('resize', handleSymbolResultsViewportChange);
+        window.addEventListener('orientationchange', handleSymbolResultsViewportChange);
+        window.addEventListener('scroll', handleSymbolResultsViewportChange, { passive: true });
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleSymbolResultsViewportChange);
+            window.visualViewport.addEventListener('scroll', handleSymbolResultsViewportChange);
+        }
 
         closeDetailsBtn.addEventListener('click', () => {
             stockDetails.classList.add('hidden');
@@ -2126,11 +2239,29 @@
         }
 
         // Touch optimizations for interactive controls on mobile
-        const TOUCH_OPTIMIZED_SELECTOR = 'button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"]';
+        const TOUCH_OPTIMIZED_SELECTOR = [
+            'button',
+            '[role="button"]',
+            'input[type="button"]',
+            'input[type="submit"]',
+            'input[type="reset"]',
+            '.ios-button',
+            '.tab-btn',
+            '.mobile-bottom-nav__button',
+            '.symbol-result',
+            'label',
+            'label[for]',
+            '.touch-target'
+        ].join(', ');
+        const TOUCH_FEEDBACK_SELECTOR = '.ios-button, .mobile-bottom-nav__button, .tab-btn, .symbol-result, label.cursor-pointer';
         const HAPTIC_DURATION_MS = 30;
         let touchOptimizationObserver = null;
 
         function applyTouchOptimizationsToElement(element) {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
             if (!element.style.touchAction) {
                 element.style.touchAction = 'manipulation';
             }
@@ -2142,6 +2273,21 @@
                     }
                 });
                 element.dataset.touchHapticBound = 'true';
+            }
+
+            if (!element.dataset.touchHighlightBound) {
+                element.style.webkitTapHighlightColor = 'transparent';
+                element.dataset.touchHighlightBound = 'true';
+            }
+
+            if (element.matches(TOUCH_FEEDBACK_SELECTOR) && !element.dataset.touchFeedbackBound) {
+                const addActive = () => element.classList.add('touch-feedback-active');
+                const removeActive = () => element.classList.remove('touch-feedback-active');
+
+                element.addEventListener('touchstart', addActive, { passive: true });
+                element.addEventListener('touchend', removeActive);
+                element.addEventListener('touchcancel', removeActive);
+                element.dataset.touchFeedbackBound = 'true';
             }
         }
 
