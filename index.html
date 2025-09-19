@@ -227,7 +227,15 @@
             -ms-user-select: none;
             user-select: none;
         }
-        
+
+        .symbol-results-scroll {
+            max-height: min(22rem, 50vh);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+        }
+
         /* Smooth scrolling for iOS */
         .smooth-scroll {
             -webkit-overflow-scrolling: touch;
@@ -367,7 +375,7 @@
                                     </div>
                                     <!-- Symbol Search Results -->
                                     <div id="symbol-search-results" class="mt-2 bg-gray-900/90 border border-cyan-500/30 rounded-lg absolute z-20 w-full hidden shadow-lg">
-                                        <div class="max-h-44 overflow-y-auto">
+                                        <div class="symbol-results-scroll">
                                             <ul id="symbol-results-list" class="py-1"></ul>
                                         </div>
                                     </div>
@@ -731,6 +739,7 @@
         const leagueTabBottom = document.getElementById('league-tab-bottom');
         const settingsTab = document.getElementById('settings-tab');
         const settingsTabBottom = document.getElementById('settings-tab-bottom');
+        const bottomTabButtons = [dashboardTab, historyTab, leagueTabBottom, settingsTabBottom];
         const dashboardContent = document.getElementById('dashboard-content');
         const historyContent = document.getElementById('history-content');
         const leagueContent = document.getElementById('league-content');
@@ -777,39 +786,74 @@
         }
 
         // Tab switching
+        function resetBottomTabButtons() {
+            bottomTabButtons.forEach((tabButton) => {
+                if (!tabButton) {
+                    return;
+                }
+
+                tabButton.classList.remove(
+                    'active',
+                    'text-cyan-400',
+                    'border-cyan-400',
+                    'border-b-2',
+                    'bg-gray-800/30',
+                    'backdrop-blur-sm'
+                );
+                tabButton.classList.add('text-gray-400');
+            });
+        }
+
+        function activateBottomTabButton(tabButton) {
+            if (!tabButton) {
+                return;
+            }
+
+            tabButton.classList.remove('text-gray-400');
+            tabButton.classList.add(
+                'active',
+                'text-cyan-400',
+                'border-cyan-400',
+                'border-b-2',
+                'bg-gray-800/30',
+                'backdrop-blur-sm'
+            );
+        }
+
         function showTab(tabName) {
             // Hide all content
             dashboardContent.classList.add('hidden');
             historyContent.classList.add('hidden');
             leagueContent.classList.add('hidden');
             settingsContent.classList.add('hidden');
-            
+
             // Remove active class from all tabs
+            resetBottomTabButtons();
             dashboardTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             historyTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             leagueTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            leagueTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             settingsTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            settingsTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            
+
             // Show selected content and activate tab
             if (tabName === 'dashboard') {
                 dashboardContent.classList.remove('hidden');
                 dashboardTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(dashboardTab);
             } else if (tabName === 'history') {
                 historyContent.classList.remove('hidden');
                 historyTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(historyTab);
                 renderHistory();
             } else if (tabName === 'league') {
                 leagueContent.classList.remove('hidden');
                 leagueTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                leagueTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(leagueTabBottom);
                 updateExportData();
                 renderLeaderboard();
             } else if (tabName === 'settings') {
                 settingsContent.classList.remove('hidden');
                 settingsTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                settingsTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(settingsTabBottom);
                 // Populate settings form
                 document.getElementById('username').value = currentUser;
             }
@@ -1693,14 +1737,41 @@
             const newUsername = document.getElementById('username').value.trim();
             const rawApiKey = alphaVantageApiKeyInput ? alphaVantageApiKeyInput.value.trim() : '';
             const sanitizedApiKey = rawApiKey.replace(/\s+/g, '');
+            const previousUsername = currentUser;
             const updates = [];
 
             if (newUsername && newUsername !== currentUser) {
+                let reassignedPredictionCount = 0;
+
+                predictions.forEach((prediction) => {
+                    if (prediction.user === previousUsername) {
+                        prediction.user = newUsername;
+                        reassignedPredictionCount += 1;
+                    }
+                });
+
+                if (reassignedPredictionCount > 0) {
+                    localStorage.setItem('stockPredictions', JSON.stringify(predictions));
+                }
+
+                if (users[previousUsername]) {
+                    delete users[previousUsername];
+                    localStorage.setItem('predictionUsers', JSON.stringify(users));
+                    updates.push('Removed outdated leaderboard entry for the previous username.');
+                }
+
                 currentUser = newUsername;
                 localStorage.setItem('currentPredictionUser', currentUser);
                 updateCurrentUser();
                 updateExportData();
+                renderPendingPredictions();
+                renderHistory();
+                renderLeaderboard();
                 updates.push(`Username updated to: ${currentUser}`);
+
+                if (reassignedPredictionCount > 0) {
+                    updates.push(`Reassigned ${reassignedPredictionCount} saved prediction${reassignedPredictionCount === 1 ? '' : 's'} to the new username.`);
+                }
             }
 
             if (sanitizedApiKey !== alphaVantageApiKey) {
