@@ -227,7 +227,15 @@
             -ms-user-select: none;
             user-select: none;
         }
-        
+
+        .symbol-results-scroll {
+            max-height: min(22rem, 50vh);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+        }
+
         /* Smooth scrolling for iOS */
         .smooth-scroll {
             -webkit-overflow-scrolling: touch;
@@ -367,7 +375,7 @@
                                     </div>
                                     <!-- Symbol Search Results -->
                                     <div id="symbol-search-results" class="mt-2 bg-gray-900/90 border border-cyan-500/30 rounded-lg absolute z-20 w-full hidden shadow-lg">
-                                        <div class="max-h-44 overflow-y-auto">
+                                        <div class="symbol-results-scroll">
                                             <ul id="symbol-results-list" class="py-1"></ul>
                                         </div>
                                     </div>
