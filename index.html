@@ -740,6 +740,7 @@
         const leagueTabBottom = document.getElementById('league-tab-bottom');
         const settingsTab = document.getElementById('settings-tab');
         const settingsTabBottom = document.getElementById('settings-tab-bottom');
+        const bottomTabButtons = [dashboardTab, historyTab, leagueTabBottom, settingsTabBottom];
         const dashboardContent = document.getElementById('dashboard-content');
         const historyContent = document.getElementById('history-content');
         const leagueContent = document.getElementById('league-content');
@@ -786,39 +787,74 @@
         }
 
         // Tab switching
+        function resetBottomTabButtons() {
+            bottomTabButtons.forEach((tabButton) => {
+                if (!tabButton) {
+                    return;
+                }
+
+                tabButton.classList.remove(
+                    'active',
+                    'text-cyan-400',
+                    'border-cyan-400',
+                    'border-b-2',
+                    'bg-gray-800/30',
+                    'backdrop-blur-sm'
+                );
+                tabButton.classList.add('text-gray-400');
+            });
+        }
+
+        function activateBottomTabButton(tabButton) {
+            if (!tabButton) {
+                return;
+            }
+
+            tabButton.classList.remove('text-gray-400');
+            tabButton.classList.add(
+                'active',
+                'text-cyan-400',
+                'border-cyan-400',
+                'border-b-2',
+                'bg-gray-800/30',
+                'backdrop-blur-sm'
+            );
+        }
+
         function showTab(tabName) {
             // Hide all content
             dashboardContent.classList.add('hidden');
             historyContent.classList.add('hidden');
             leagueContent.classList.add('hidden');
             settingsContent.classList.add('hidden');
-            
+
             // Remove active class from all tabs
+            resetBottomTabButtons();
             dashboardTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             historyTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             leagueTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            leagueTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             settingsTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            settingsTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            
+
             // Show selected content and activate tab
             if (tabName === 'dashboard') {
                 dashboardContent.classList.remove('hidden');
                 dashboardTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(dashboardTab);
             } else if (tabName === 'history') {
                 historyContent.classList.remove('hidden');
                 historyTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(historyTab);
                 renderHistory();
             } else if (tabName === 'league') {
                 leagueContent.classList.remove('hidden');
                 leagueTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                leagueTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(leagueTabBottom);
                 updateExportData();
                 renderLeaderboard();
             } else if (tabName === 'settings') {
                 settingsContent.classList.remove('hidden');
                 settingsTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                settingsTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(settingsTabBottom);
                 // Populate settings form
                 document.getElementById('username').value = currentUser;
             }
@@ -2113,23 +2149,62 @@
             addTouchOptimizations();
         }
 
-        // Add touch optimizations
-        function addTouchOptimizations() {
-            // Prevent double-tap zoom on buttons
-            document.querySelectorAll('button, .ios-button').forEach(button => {
-                button.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                }, { passive: false });
-            });
-            
-            // Add haptic feedback for important actions
-            document.querySelectorAll('.resolve-btn, #submit-prediction, .ios-button').forEach(button => {
-                button.addEventListener('click', () => {
+        // Touch optimizations for interactive controls on mobile
+        const TOUCH_OPTIMIZED_SELECTOR = 'button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"]';
+        const HAPTIC_DURATION_MS = 30;
+        let touchOptimizationObserver = null;
+
+        function applyTouchOptimizationsToElement(element) {
+            if (!element.style.touchAction) {
+                element.style.touchAction = 'manipulation';
+            }
+
+            if (!element.dataset.touchHapticBound) {
+                element.addEventListener('click', () => {
                     if (navigator.vibrate) {
-                        navigator.vibrate(30);
+                        navigator.vibrate(HAPTIC_DURATION_MS);
                     }
                 });
+                element.dataset.touchHapticBound = 'true';
+            }
+        }
+
+        function applyTouchOptimizationsToTree(root) {
+            if (root instanceof HTMLElement) {
+                if (root.matches(TOUCH_OPTIMIZED_SELECTOR)) {
+                    applyTouchOptimizationsToElement(root);
+                }
+
+                root.querySelectorAll(TOUCH_OPTIMIZED_SELECTOR).forEach(applyTouchOptimizationsToElement);
+            } else if (typeof DocumentFragment !== 'undefined' && root instanceof DocumentFragment) {
+                root.querySelectorAll(TOUCH_OPTIMIZED_SELECTOR).forEach(applyTouchOptimizationsToElement);
+            }
+        }
+
+        function addTouchOptimizations() {
+            applyTouchOptimizationsToTree(document.body);
+
+            if (touchOptimizationObserver) {
+                return;
+            }
+
+            touchOptimizationObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node instanceof HTMLElement) {
+                            applyTouchOptimizationsToTree(node);
+                        } else if (typeof DocumentFragment !== 'undefined' && node instanceof DocumentFragment) {
+                            node.childNodes.forEach((child) => {
+                                if (child instanceof HTMLElement) {
+                                    applyTouchOptimizationsToTree(child);
+                                }
+                            });
+                        }
+                    });
+                });
             });
+
+            touchOptimizationObserver.observe(document.body, { childList: true, subtree: true });
         }
 
         init();
