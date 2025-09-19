@@ -1693,14 +1693,41 @@
             const newUsername = document.getElementById('username').value.trim();
             const rawApiKey = alphaVantageApiKeyInput ? alphaVantageApiKeyInput.value.trim() : '';
             const sanitizedApiKey = rawApiKey.replace(/\s+/g, '');
+            const previousUsername = currentUser;
             const updates = [];
 
             if (newUsername && newUsername !== currentUser) {
+                let reassignedPredictionCount = 0;
+
+                predictions.forEach((prediction) => {
+                    if (prediction.user === previousUsername) {
+                        prediction.user = newUsername;
+                        reassignedPredictionCount += 1;
+                    }
+                });
+
+                if (reassignedPredictionCount > 0) {
+                    localStorage.setItem('stockPredictions', JSON.stringify(predictions));
+                }
+
+                if (users[previousUsername]) {
+                    delete users[previousUsername];
+                    localStorage.setItem('predictionUsers', JSON.stringify(users));
+                    updates.push('Removed outdated leaderboard entry for the previous username.');
+                }
+
                 currentUser = newUsername;
                 localStorage.setItem('currentPredictionUser', currentUser);
                 updateCurrentUser();
                 updateExportData();
+                renderPendingPredictions();
+                renderHistory();
+                renderLeaderboard();
                 updates.push(`Username updated to: ${currentUser}`);
+
+                if (reassignedPredictionCount > 0) {
+                    updates.push(`Reassigned ${reassignedPredictionCount} saved prediction${reassignedPredictionCount === 1 ? '' : 's'} to the new username.`);
+                }
             }
 
             if (sanitizedApiKey !== alphaVantageApiKey) {
