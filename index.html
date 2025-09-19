@@ -1930,15 +1930,15 @@
 
         // Add touch optimizations
         function addTouchOptimizations() {
-            // Prevent double-tap zoom on buttons
-            document.querySelectorAll('button, .ios-button').forEach(button => {
-                button.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                }, { passive: false });
+            // Rely on touch-action manipulation to avoid the 300ms delay without suppressing native click events
+            document.querySelectorAll('button').forEach((button) => {
+                if (!button.style.touchAction) {
+                    button.style.touchAction = 'manipulation';
+                }
             });
-            
+
             // Add haptic feedback for important actions
-            document.querySelectorAll('.resolve-btn, #submit-prediction, .ios-button').forEach(button => {
+            document.querySelectorAll('.resolve-btn, #submit-prediction, .ios-button').forEach((button) => {
                 button.addEventListener('click', () => {
                     if (navigator.vibrate) {
                         navigator.vibrate(30);
