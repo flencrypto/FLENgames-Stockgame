@@ -731,6 +731,7 @@
         let alphaVantageApiKey = storedAlphaVantageApiKey || DEFAULT_ALPHA_VANTAGE_API_KEY;
         let hasShownMissingApiKeyAlert = false;
         let deferredPrompt = null;
+        const LEAGUE_EXPORT_VERSION = 1;
 
         // DOM Elements
         const dashboardTab = document.getElementById('dashboard-tab');
@@ -1403,42 +1404,210 @@
         }
 
         // League functions
+        function getValidTimestamp(value) {
+            if (!value) {
+                return 0;
+            }
+
+            const parsed = Date.parse(value);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function sanitizeUserEntry(username, entry = {}) {
+            const sanitizedPredictions = Array.isArray(entry.predictions)
+                ? entry.predictions.map(prediction => ({
+                    ...prediction,
+                    user: username
+                }))
+                : [];
+
+            const hasPredictionData = sanitizedPredictions.length > 0;
+            const pointsS1 = hasPredictionData
+                ? Math.round(calculateSystem1Points(sanitizedPredictions))
+                : Math.round(Number(entry.pointsS1) || 0);
+            const pointsS2 = hasPredictionData
+                ? Math.round(calculateSystem2Points(sanitizedPredictions))
+                : Math.round(Number(entry.pointsS2) || 0);
+
+            const updatedAt = typeof entry.updatedAt === 'string' && getValidTimestamp(entry.updatedAt)
+                ? entry.updatedAt
+                : new Date().toISOString();
+
+            return {
+                predictions: sanitizedPredictions,
+                pointsS1,
+                pointsS2,
+                updatedAt
+            };
+        }
+
+        function shouldReplaceUserEntry(existingEntry, incomingEntry) {
+            const existingTimestamp = getValidTimestamp(existingEntry?.updatedAt);
+            const incomingTimestamp = getValidTimestamp(incomingEntry?.updatedAt);
+
+            if (incomingTimestamp && existingTimestamp) {
+                if (incomingTimestamp > existingTimestamp) {
+                    return true;
+                }
+
+                if (incomingTimestamp < existingTimestamp) {
+                    return false;
+                }
+            } else if (incomingTimestamp && !existingTimestamp) {
+                return true;
+            } else if (!incomingTimestamp && existingTimestamp) {
+                return false;
+            }
+
+            const existingCount = Array.isArray(existingEntry?.predictions) ? existingEntry.predictions.length : 0;
+            const incomingCount = Array.isArray(incomingEntry?.predictions) ? incomingEntry.predictions.length : 0;
+
+            if (incomingCount !== existingCount) {
+                return incomingCount > existingCount;
+            }
+
+            const existingS1 = Math.round(Number(existingEntry?.pointsS1) || 0);
+            const incomingS1 = Math.round(Number(incomingEntry?.pointsS1) || 0);
+
+            if (incomingS1 !== existingS1) {
+                return incomingS1 > existingS1;
+            }
+
+            const existingS2 = Math.round(Number(existingEntry?.pointsS2) || 0);
+            const incomingS2 = Math.round(Number(incomingEntry?.pointsS2) || 0);
+
+            if (incomingS2 !== existingS2) {
+                return incomingS2 > existingS2;
+            }
+
+            return false;
+        }
+
+        function mergeLeagueUsers(leagueUsers = {}, options = {}) {
+            if (!leagueUsers || typeof leagueUsers !== 'object') {
+                return { added: [], updated: [] };
+            }
+
+            const excludedUsers = new Set(options.exclude || []);
+            const summary = { added: [], updated: [] };
+
+            Object.entries(leagueUsers).forEach(([username, entry]) => {
+                if (!username || typeof entry !== 'object' || excludedUsers.has(username)) {
+                    return;
+                }
+
+                const sanitizedEntry = sanitizeUserEntry(username, entry);
+                const existingEntry = users[username];
+
+                if (!existingEntry) {
+                    users[username] = sanitizedEntry;
+                    summary.added.push(username);
+                    return;
+                }
+
+                if (shouldReplaceUserEntry(existingEntry, sanitizedEntry)) {
+                    users[username] = sanitizedEntry;
+                    summary.updated.push(username);
+                }
+            });
+
+            return summary;
+        }
+
+        function normalizeStoredUsers(storedUsers = {}) {
+            if (!storedUsers || typeof storedUsers !== 'object') {
+                return {};
+            }
+
+            const normalizedUsers = {};
+            let hasChanges = false;
+
+            Object.entries(storedUsers).forEach(([username, entry]) => {
+                if (!username || typeof entry !== 'object') {
+                    return;
+                }
+
+                const sanitizedEntry = sanitizeUserEntry(username, entry);
+                normalizedUsers[username] = sanitizedEntry;
+
+                if (!entry.updatedAt || sanitizedEntry.predictions.some((prediction, index) => {
+                    const original = Array.isArray(entry.predictions) ? entry.predictions[index] : null;
+                    return !original || original.user !== username;
+                })) {
+                    hasChanges = true;
+                }
+            });
+
+            if (hasChanges) {
+                localStorage.setItem('predictionUsers', JSON.stringify(normalizedUsers));
+            }
+
+            return normalizedUsers;
+        }
+
         function updateExportData() {
             const userPredictions = predictions.filter(p => p.user === currentUser);
-            const userData = {
-                user: currentUser,
+            const currentSnapshot = sanitizeUserEntry(currentUser, {
                 predictions: userPredictions,
                 pointsS1: Math.round(calculateSystem1Points(userPredictions)),
-                pointsS2: Math.round(calculateSystem2Points(userPredictions))
+                pointsS2: Math.round(calculateSystem2Points(userPredictions)),
+                updatedAt: new Date().toISOString()
+            });
+
+            const leagueSnapshot = { ...users };
+            leagueSnapshot[currentUser] = currentSnapshot;
+
+            const payload = {
+                version: LEAGUE_EXPORT_VERSION,
+                user: currentUser,
+                predictions: currentSnapshot.predictions,
+                pointsS1: currentSnapshot.pointsS1,
+                pointsS2: currentSnapshot.pointsS2,
+                updatedAt: currentSnapshot.updatedAt,
+                leagueUsers: leagueSnapshot
             };
-            exportData.value = JSON.stringify(userData);
+
+            exportData.value = JSON.stringify(payload);
         }
 
         function importUserDataFromText() {
             try {
                 const data = JSON.parse(importData.value);
-                if (data.user && data.predictions && Array.isArray(data.predictions)) {
-                    // Add user to users object
-                    users[data.user] = {
-                        predictions: data.predictions,
-                        pointsS1: data.pointsS1 || 0,
-                        pointsS2: data.pointsS2 || 0
-                    };
-                    
-                    // Save to localStorage
-                    localStorage.setItem('predictionUsers', JSON.stringify(users));
-                    
-                    // Clear import field
-                    importData.value = '';
-                    
-                    // Refresh leaderboard
-                    renderLeaderboard();
-                    
-                    alert(`Successfully imported data for user: ${data.user}`);
-                } else {
+
+                if (!data || typeof data !== 'object' || !data.user) {
                     throw new Error('Invalid data format');
                 }
+
+                const username = data.user;
+                const sanitizedEntry = sanitizeUserEntry(username, data);
+
+                users[username] = sanitizedEntry;
+
+                let mergeSummary = { added: [], updated: [] };
+                if (data.leagueUsers) {
+                    mergeSummary = mergeLeagueUsers(data.leagueUsers, { exclude: [username] });
+                }
+
+                localStorage.setItem('predictionUsers', JSON.stringify(users));
+
+                importData.value = '';
+
+                renderLeaderboard();
+                updateExportData();
+
+                const feedback = [`Successfully imported data for user: ${username}`];
+
+                if (mergeSummary.added.length > 0) {
+                    feedback.push(`Added ${mergeSummary.added.length} new league entr${mergeSummary.added.length === 1 ? 'y' : 'ies'}: ${mergeSummary.added.join(', ')}.`);
+                }
+
+                if (mergeSummary.updated.length > 0) {
+                    feedback.push(`Updated ${mergeSummary.updated.length} existing league entr${mergeSummary.updated.length === 1 ? 'y' : 'ies'}: ${mergeSummary.updated.join(', ')}.`);
+                }
+
+                alert(feedback.join('\n'));
             } catch (error) {
+                console.error('Failed to import league data', error);
                 alert('Invalid data format. Please check the imported text.');
             }
         }
@@ -1455,12 +1624,22 @@
             
             // Convert to array and sort by points
             const userList = Object.entries(allUsers)
-                .map(([username, userData]) => ({
-                    username,
-                    pointsS1: userData.pointsS1 || 0,
-                    pointsS2: userData.pointsS2 || 0,
-                    predictionCount: userData.predictions ? userData.predictions.length : 0
-                }))
+                .map(([username, userData]) => {
+                    const userPredictions = Array.isArray(userData.predictions) ? userData.predictions : [];
+                    const pointsS1 = userPredictions.length > 0
+                        ? Math.round(calculateSystem1Points(userPredictions))
+                        : Math.round(Number(userData.pointsS1) || 0);
+                    const pointsS2 = userPredictions.length > 0
+                        ? Math.round(calculateSystem2Points(userPredictions))
+                        : Math.round(Number(userData.pointsS2) || 0);
+
+                    return {
+                        username,
+                        pointsS1,
+                        pointsS2,
+                        predictionCount: userPredictions.length
+                    };
+                })
                 .sort((a, b) => b.pointsS1 - a.pointsS1); // Sort by System 1 points
             
             const container = document.getElementById('leaderboard');
@@ -1641,7 +1820,8 @@
             
             renderPoints();
             renderPendingPredictions();
-            
+            updateExportData();
+
             alert(`Quantum prediction launched for ${symbol} - ${prediction.toUpperCase()} ${period === 'day' ? 'today' : 'this week'}!`);
         });
 
@@ -1667,7 +1847,8 @@
                 renderPoints();
                 renderPendingPredictions();
                 renderHistory();
-                
+                updateExportData();
+
                 hideResolveModal();
                 
                 const actual = closePrice > openPrice ? 'up' : 'down';
@@ -1685,12 +1866,14 @@
 
         refreshLeaderboard.addEventListener('click', () => {
             renderLeaderboard();
+            updateExportData();
             alert('Leaderboard refreshed!');
         });
 
         importUserData.addEventListener('click', importUserDataFromText);
 
         copyData.addEventListener('click', () => {
+            updateExportData();
             exportData.select();
             document.execCommand('copy');
             alert('Your data has been copied to clipboard. Share it with friends!');
@@ -1771,6 +1954,7 @@
                 renderPendingPredictions();
                 renderHistory();
                 renderLeaderboard();
+                updateExportData();
                 alert('Your data has been reset.');
             }
         });
@@ -1911,6 +2095,7 @@
 
         // Initialize
         function init() {
+            users = normalizeStoredUsers(users);
             updateMarketStatus();
             updateCurrentUser();
             renderPendingPredictions();
