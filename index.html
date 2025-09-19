@@ -740,7 +740,7 @@
         const resolveModal = document.getElementById('resolve-modal');
         const resolveForm = document.getElementById('resolve-form');
         const cancelResolve = document.getElementById('cancel-resolve');
-        const closeResolveModal = document.getElementById('close-resolve-modal');
+        const closeResolveModalButton = document.getElementById('close-resolve-modal');
         const marketStatusText = document.getElementById('market-status-text');
         const marketStatusIcon = document.getElementById('market-status-icon');
         const predictionFormContainer = document.getElementById('prediction-form-container');
@@ -1523,7 +1523,7 @@
             resolveModal.classList.remove('hidden');
         }
 
-        function closeResolveModal() {
+        function hideResolveModal() {
             resolveModal.classList.add('hidden');
             currentResolveId = null;
         }
@@ -1660,7 +1660,7 @@
                 renderPendingPredictions();
                 renderHistory();
                 
-                closeResolveModal();
+                hideResolveModal();
                 
                 const actual = closePrice > openPrice ? 'up' : 'down';
                 const isCorrect = predictions[predictionIndex].prediction === actual;
@@ -1672,8 +1672,8 @@
             }
         });
 
-        cancelResolve.addEventListener('click', closeResolveModal);
-        closeResolveModal.addEventListener('click', closeResolveModal);
+        cancelResolve.addEventListener('click', hideResolveModal);
+        closeResolveModalButton.addEventListener('click', hideResolveModal);
 
         refreshLeaderboard.addEventListener('click', () => {
             renderLeaderboard();
