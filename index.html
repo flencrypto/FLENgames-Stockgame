@@ -739,6 +739,7 @@
         const leagueTabBottom = document.getElementById('league-tab-bottom');
         const settingsTab = document.getElementById('settings-tab');
         const settingsTabBottom = document.getElementById('settings-tab-bottom');
+        const bottomTabButtons = [dashboardTab, historyTab, leagueTabBottom, settingsTabBottom];
         const dashboardContent = document.getElementById('dashboard-content');
         const historyContent = document.getElementById('history-content');
         const leagueContent = document.getElementById('league-content');
@@ -785,39 +786,74 @@
         }
 
         // Tab switching
+        function resetBottomTabButtons() {
+            bottomTabButtons.forEach((tabButton) => {
+                if (!tabButton) {
+                    return;
+                }
+
+                tabButton.classList.remove(
+                    'active',
+                    'text-cyan-400',
+                    'border-cyan-400',
+                    'border-b-2',
+                    'bg-gray-800/30',
+                    'backdrop-blur-sm'
+                );
+                tabButton.classList.add('text-gray-400');
+            });
+        }
+
+        function activateBottomTabButton(tabButton) {
+            if (!tabButton) {
+                return;
+            }
+
+            tabButton.classList.remove('text-gray-400');
+            tabButton.classList.add(
+                'active',
+                'text-cyan-400',
+                'border-cyan-400',
+                'border-b-2',
+                'bg-gray-800/30',
+                'backdrop-blur-sm'
+            );
+        }
+
         function showTab(tabName) {
             // Hide all content
             dashboardContent.classList.add('hidden');
             historyContent.classList.add('hidden');
             leagueContent.classList.add('hidden');
             settingsContent.classList.add('hidden');
-            
+
             // Remove active class from all tabs
+            resetBottomTabButtons();
             dashboardTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             historyTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             leagueTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            leagueTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
             settingsTab.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            settingsTabBottom.classList.remove('active', 'text-cyan-400', 'border-cyan-400');
-            
+
             // Show selected content and activate tab
             if (tabName === 'dashboard') {
                 dashboardContent.classList.remove('hidden');
                 dashboardTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(dashboardTab);
             } else if (tabName === 'history') {
                 historyContent.classList.remove('hidden');
                 historyTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(historyTab);
                 renderHistory();
             } else if (tabName === 'league') {
                 leagueContent.classList.remove('hidden');
                 leagueTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                leagueTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(leagueTabBottom);
                 updateExportData();
                 renderLeaderboard();
             } else if (tabName === 'settings') {
                 settingsContent.classList.remove('hidden');
                 settingsTab.classList.add('active', 'text-cyan-400', 'border-cyan-400');
-                settingsTabBottom.classList.add('active', 'text-cyan-400', 'border-cyan-400');
+                activateBottomTabButton(settingsTabBottom);
                 // Populate settings form
                 document.getElementById('username').value = currentUser;
             }
