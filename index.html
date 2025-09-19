@@ -1893,23 +1893,62 @@
             addTouchOptimizations();
         }
 
-        // Add touch optimizations
-        function addTouchOptimizations() {
-            // Prevent double-tap zoom on buttons
-            document.querySelectorAll('button, .ios-button').forEach(button => {
-                button.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                }, { passive: false });
-            });
-            
-            // Add haptic feedback for important actions
-            document.querySelectorAll('.resolve-btn, #submit-prediction, .ios-button').forEach(button => {
-                button.addEventListener('click', () => {
+        // Touch optimizations for interactive controls on mobile
+        const TOUCH_OPTIMIZED_SELECTOR = 'button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"]';
+        const HAPTIC_DURATION_MS = 30;
+        let touchOptimizationObserver = null;
+
+        function applyTouchOptimizationsToElement(element) {
+            if (!element.style.touchAction) {
+                element.style.touchAction = 'manipulation';
+            }
+
+            if (!element.dataset.touchHapticBound) {
+                element.addEventListener('click', () => {
                     if (navigator.vibrate) {
-                        navigator.vibrate(30);
+                        navigator.vibrate(HAPTIC_DURATION_MS);
                     }
                 });
+                element.dataset.touchHapticBound = 'true';
+            }
+        }
+
+        function applyTouchOptimizationsToTree(root) {
+            if (root instanceof HTMLElement) {
+                if (root.matches(TOUCH_OPTIMIZED_SELECTOR)) {
+                    applyTouchOptimizationsToElement(root);
+                }
+
+                root.querySelectorAll(TOUCH_OPTIMIZED_SELECTOR).forEach(applyTouchOptimizationsToElement);
+            } else if (typeof DocumentFragment !== 'undefined' && root instanceof DocumentFragment) {
+                root.querySelectorAll(TOUCH_OPTIMIZED_SELECTOR).forEach(applyTouchOptimizationsToElement);
+            }
+        }
+
+        function addTouchOptimizations() {
+            applyTouchOptimizationsToTree(document.body);
+
+            if (touchOptimizationObserver) {
+                return;
+            }
+
+            touchOptimizationObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node instanceof HTMLElement) {
+                            applyTouchOptimizationsToTree(node);
+                        } else if (typeof DocumentFragment !== 'undefined' && node instanceof DocumentFragment) {
+                            node.childNodes.forEach((child) => {
+                                if (child instanceof HTMLElement) {
+                                    applyTouchOptimizationsToTree(child);
+                                }
+                            });
+                        }
+                    });
+                });
             });
+
+            touchOptimizationObserver.observe(document.body, { childList: true, subtree: true });
         }
 
         init();
