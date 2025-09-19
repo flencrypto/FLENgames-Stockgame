@@ -98,6 +98,16 @@ The app includes multiple themes and can be customized through the Settings tab:
 - **Dark Theme**: Enhanced dark mode
 - **Neon Theme**: Bright, vibrant colors
 
+## 🔑 Alpha Vantage API Key
+
+Live market data requires a personal Alpha Vantage API key:
+
+1. Visit the [Alpha Vantage API portal](https://www.alphavantage.co/support/#api-key) and request a free key.
+2. Open the **Settings** tab inside the app and paste the key into the **Alpha Vantage API Key** field.
+3. Tap **Save Settings** to securely store the key in your browser's local storage.
+
+For the current test build, a temporary key (`8HE88K05447IY34U`) ships preloaded so the live features work immediately. You can replace it with your own key in **Settings**, or clear the field to restore the bundled test key.
+
 ## 🔒 Privacy & Security
 
 - All data stored locally on your device

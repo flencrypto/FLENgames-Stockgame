@@ -2,7 +2,7 @@
   "name": "Mr. FLEN's Stock Prediction Game",
   "short_name": "Stock Predictor",
   "description": "A quantum-powered stock prediction game with real-time market data",
-  "start_url": "./Index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1F2937",
   "theme_color": "#4F46E5",
@@ -37,7 +37,7 @@
       "name": "New Prediction",
       "short_name": "Predict",
       "description": "Make a new stock prediction",
-      "url": "./Index.html#predict",
+      "url": "./index.html#predict",
       "icons": [
         {
           "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzRGNzZFNiIgZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+PC9zdmc+",
@@ -49,7 +49,7 @@
       "name": "Leaderboard",
       "short_name": "League",
       "description": "View the leaderboard",
-      "url": "./Index.html#league",
+      "url": "./index.html#league",
       "icons": [
         {
           "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzRGNzZFNiIgZD0iTTcgMTRMMTMuNSAxN0wyMSAxNFYxM0wxMy41IDEwTDcgMTNWMTRaIi8+PC9zdmc+",

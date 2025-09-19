@@ -1,7 +1,7 @@
 const CACHE_NAME = 'stock-predictor-v1.0.0';
 const urlsToCache = [
   './',
-  './Index.html',
+  './index.html',
   './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
@@ -53,7 +53,7 @@ self.addEventListener('fetch', (event) => {
         }).catch(() => {
           // Return offline page or fallback for navigation requests
           if (event.request.mode === 'navigate') {
-            return caches.match('./Index.html');
+            return caches.match('./index.html');
           }
         });
       })
