@@ -144,6 +144,21 @@ const isPrediction = (entry: unknown): entry is Prediction => {
   );
 };
 
+const toFiniteNumber = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return null;
+};
+
 export const sanitizeUserEntry = (
   username: string,
   entry: Partial<LeagueEntry> | Record<string, unknown> = {},
@@ -153,8 +168,8 @@ export const sanitizeUserEntry = (
     : [];
 
   const sanitizedPredictions = rawPredictions.filter(isPrediction).map((prediction) => {
-    const openPrice = typeof prediction.openPrice === 'number' ? prediction.openPrice : null;
-    const closePrice = typeof prediction.closePrice === 'number' ? prediction.closePrice : null;
+    const openPrice = toFiniteNumber(prediction.openPrice);
+    const closePrice = toFiniteNumber(prediction.closePrice);
     const status: PredictionStatus = prediction.status === 'resolved' ? 'resolved' : 'pending';
 
     return {

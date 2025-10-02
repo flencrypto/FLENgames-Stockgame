@@ -71,6 +71,25 @@ describe('prediction utilities', () => {
     expect(sanitized.pointsS1).toBe(2);
   });
 
+  it('preserves numeric price data provided as strings when sanitizing entries', () => {
+    const entry: Partial<LeagueEntry> = {
+      predictions: [
+        {
+          ...basePrediction,
+          id: 6,
+          openPrice: '150.25',
+          closePrice: '175.75',
+          status: 'resolved',
+        } as unknown as Prediction,
+      ],
+    };
+
+    const sanitized = sanitizeUserEntry('StringPlayer', entry);
+    expect(sanitized.predictions[0].openPrice).toBe(150.25);
+    expect(sanitized.predictions[0].closePrice).toBe(175.75);
+    expect(calculateSystem2Points(sanitized.predictions)).toBeGreaterThan(0);
+  });
+
   it('decides whether to replace user entries based on freshness and score', () => {
     const existing: LeagueEntry = {
       predictions: [basePrediction],
