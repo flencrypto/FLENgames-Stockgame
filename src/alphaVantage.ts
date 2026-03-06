@@ -149,7 +149,7 @@ export const createSymbolSearchCache = (
   };
 
   const pruneExpired = (now: number = Date.now()): void => {
-    Array.from(cache.entries()).forEach(([entryKey, entry]) => {
+    cache.forEach((entry, entryKey) => {
       if (entry.expiresAt <= now) {
         cache.delete(entryKey);
       }
