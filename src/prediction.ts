@@ -25,34 +25,33 @@ export interface LeagueEntry {
 export type LeagueUsers = Record<string, LeagueEntry>;
 
 export const calculateSystem1Points = (entries: Prediction[]): number =>
-  entries
-    .filter(
-      (prediction) =>
-        prediction.status === 'resolved' &&
-        typeof prediction.openPrice === 'number' &&
-        typeof prediction.closePrice === 'number',
-    )
-    .reduce((total, prediction) => {
-      const actualDirection: TrendDirection =
-        (prediction.closePrice ?? 0) > (prediction.openPrice ?? 0) ? 'up' : 'down';
-      return total + (prediction.prediction === actualDirection ? 1 : -1);
-    }, 0);
+  entries.reduce((total, prediction) => {
+    if (
+      prediction.status !== 'resolved' ||
+      typeof prediction.openPrice !== 'number' ||
+      typeof prediction.closePrice !== 'number'
+    ) {
+      return total;
+    }
+    const actualDirection: TrendDirection =
+      prediction.closePrice > prediction.openPrice ? 'up' : 'down';
+    return total + (prediction.prediction === actualDirection ? 1 : -1);
+  }, 0);
 
 export const calculateSystem2Points = (entries: Prediction[]): number =>
-  entries
-    .filter(
-      (prediction) =>
-        prediction.status === 'resolved' &&
-        typeof prediction.openPrice === 'number' &&
-        typeof prediction.closePrice === 'number' &&
-        prediction.openPrice !== 0,
-    )
-    .reduce((total, prediction) => {
-      const change =
-        ((prediction.closePrice ?? 0) - (prediction.openPrice ?? 0)) / (prediction.openPrice ?? 1);
-      const changePercent = change * 100;
-      return prediction.prediction === 'up' ? total + changePercent : total - changePercent;
-    }, 0);
+  entries.reduce((total, prediction) => {
+    if (
+      prediction.status !== 'resolved' ||
+      typeof prediction.openPrice !== 'number' ||
+      typeof prediction.closePrice !== 'number' ||
+      prediction.openPrice === 0
+    ) {
+      return total;
+    }
+    const change = (prediction.closePrice - prediction.openPrice) / prediction.openPrice;
+    const changePercent = change * 100;
+    return prediction.prediction === 'up' ? total + changePercent : total - changePercent;
+  }, 0);
 
 export const formatDate = (date: Date): string =>
   new Intl.DateTimeFormat('en-US', {
@@ -323,12 +322,14 @@ export const normalizeUsers = (storedUsers: unknown): NormalizeResult => {
       return;
     }
 
-    sanitizedEntry.predictions.forEach((prediction, index) => {
-      const originalPrediction = originalPredictions[index];
-      if (!originalPrediction || originalPrediction.user !== username) {
-        hasChanges = true;
-      }
-    });
+    if (
+      sanitizedEntry.predictions.some((prediction, index) => {
+        const originalPrediction = originalPredictions[index];
+        return !originalPrediction || originalPrediction.user !== username;
+      })
+    ) {
+      hasChanges = true;
+    }
   });
 
   return { normalizedUsers, hasChanges };
